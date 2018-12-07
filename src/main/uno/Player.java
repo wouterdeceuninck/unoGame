@@ -13,13 +13,8 @@ public class Player {
 	private int score;
 	private boolean ready;
 
-	public Player() {
-		cards = new ArrayList<>();
-	}
-
-	public Player(String name, gameControllerInterface gameController) {
+	public Player(String name) {
 		this.name = name;
-		this.gameController = gameController;
 		this.score = 0;
 		cards = new ArrayList<>();
 	}
@@ -81,5 +76,9 @@ public class Player {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setGameControllerInterface(gameControllerInterface gameController) {
+		this.gameController = gameController;
 	}
 }

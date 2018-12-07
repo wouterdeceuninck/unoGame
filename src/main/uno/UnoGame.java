@@ -3,6 +3,7 @@ package main.uno;
 import java.rmi.RemoteException;
 import java.util.*;
 
+import main.controller.NewGameInfo;
 import main.exceptions.GamePlayError;
 import main.exceptions.UnknownUserToGameException;
 import main.exceptions.WrongCardOnPileException;
@@ -49,19 +50,16 @@ public class UnoGame {
 		return playerCount;
 	}
 
-	public UnoGame(int nPlayers, String name, int gameTheme, dbInterface db) {
-		deck = new ArrayList<Card>();
-		this.name = "UNO game";
-		this.name = name;
+	public UnoGame(NewGameInfo newGameInfo) {
+		this.name = newGameInfo.getGameName();
 		this.players = new ArrayList<>();
-		this.db = db;
+		this.playerCount = newGameInfo.getNumberOfPlayers();
+
+		deck = new ArrayList<>();
+		pile = new ArrayList<>();
+		players = new ArrayList<>();
 
 		newDeck();
-
-		pile = new ArrayList<Card>();
-		players = new ArrayList<Player>();
-
-		this.playerCount = nPlayers;
 	}
 
 	public Player getNextPlayer(int skip) {
@@ -204,10 +202,8 @@ public class UnoGame {
 		return this.name;
 	}
 
-	public void addPlayer(String username, gameControllerInterface gameController) {
-		Player player = new Player(username, gameController);
+	public void addPlayer(Player player) {
 		players.add(player);
-
 		if (players.stream().allMatch(Player::isReady)) {
 			this.play();
 		}

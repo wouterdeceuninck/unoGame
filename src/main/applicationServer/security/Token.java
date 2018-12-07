@@ -62,11 +62,11 @@ public class Token {
             return this;
         }
 
-        public Token build(JwtFactory jwtFactory) {
+        public Token build() {
             try {
                 return new Token(JWTmapper.getHeader(map)
                         ,JWTmapper.getBody(map)
-                        ,jwtFactory.createTailer(JWTmapper.getHeader(map), JWTmapper.getBody(map)));
+                        ,new JwtFactory().createTailer(JWTmapper.getHeader(map), JWTmapper.getBody(map)));
 
             } catch (InvalidKeyException | SignatureException e) {
                 e.printStackTrace();

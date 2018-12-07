@@ -10,13 +10,11 @@ import main.uno.Card;
 
 public interface ServerInterface extends Remote, AuthenticationInterface {
 
-    void startNewGame(NewGameInfo newGameInfo) throws RemoteException;
-	void giveLobby(lobbyInterface lobbyController) throws RemoteException;
-	void exit(lobbyInterface lobbyController) throws RemoteException;
-	void joinGame(gameControllerInterface gameController, int gameID, String username) throws RemoteException;
+    String startNewGame(NewGameInfo newGameInfo) throws RemoteException;
+	void joinGame(gameControllerInterface gameController, String gameID, String username) throws RemoteException;
 
 	List<String> getGames() throws RemoteException;
-	void send(String s, String username) throws RemoteException;
+	void sendToAllPlayers(String s, String username) throws RemoteException;
 	void sendGameMsg(String msg, int gameID, String username) throws RemoteException;
 	List<Card> getCards(String username, String gameID) throws RemoteException;
 	void openLobby(gameControllerInterface gci) throws RemoteException;

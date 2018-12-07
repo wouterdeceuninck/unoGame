@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 import main.client.UserController;
+import main.exceptions.InvalidInputException;
 import main.interfaces.dispatcherInterface;
 import main.interfaces.ServerInterface;
 import javafx.fxml.FXML;
@@ -85,30 +86,44 @@ public class LoginController {
 
 	@FXML
     private void Register() {
-        if (isValidRegisterInput(registerUsername.getText(), password1.getText(), password2.getText())) {
-            try {
-                userController.registerToServer(registerUsername.getText(), password1.getText());
-                startLobby();
-            } catch (RemoteException e) {
-                serverNotFound();
-            } catch (FailedLoginException e) {
-                popUpAlert(e.getMessage());
-            }
-        } else popUpAlert("Not all fields were filled out correctly!");
-    }
+			try {
+				registerLogic();
+				startLobby();
+			} catch (FailedLoginException | InvalidInputException e) {
+				popUpAlert(e.getMessage());
+			}
+	}
 
 	@FXML
-	private void Login() {
-		if (isValidLoginInput(loginUsername.getText(), loginPassword.getText())) {
+	private void login() {
+		try {
+			this.loginLogic(loginUsername.getText(), loginPassword.getText());
+			startLobby();
+		} catch (InvalidInputException e) {
+			popUpAlert(e.getMessage());
+		}
+	}
+
+	public void registerLogic() throws FailedLoginException, InvalidInputException {
+		if (isValidRegisterInput(registerUsername.getText(), password1.getText(), password2.getText())) {
+				try {
+				userController.registerToServer(registerUsername.getText(), password1.getText());
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		} else throw new InvalidInputException("The input is invalid");
+
+	}
+
+
+	public void loginLogic(String username, String password) throws InvalidInputException {
+		if (isValidLoginInput(username, password)) {
             try {
-                userController.loginToServer(loginUsername.getText(), loginPassword.getText());
-                startLobby();
+                userController.loginToServer(username, password);
             } catch (RemoteException e) {
-                serverNotFound();
-            } catch (UserController.FailedToLoginException failedToLoginException) {
-                popUpAlert(failedToLoginException.getMessage());
+                e.printStackTrace();
             }
-        } else popUpAlert("Not all fields were filled out!");
+        } else throw new InvalidInputException("The input is invalid");
 	}
 
 	public boolean isValidLoginInput(String username, String password) {

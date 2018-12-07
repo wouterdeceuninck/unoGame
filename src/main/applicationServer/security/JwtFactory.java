@@ -31,7 +31,7 @@ public class JwtFactory {
         signature = Signature.getInstance("SHA256withRSA");
     }
 
-    public String createTailer(String header, String body) throws InvalidKeyException, SignatureException {
+    String createTailer(String header, String body) throws InvalidKeyException, SignatureException {
         signature.initSign(privateKey);
         signature.update((header + "." + body + "." + SECRET).getBytes());
 

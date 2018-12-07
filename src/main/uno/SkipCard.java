@@ -17,7 +17,6 @@ public class SkipCard extends Card implements Serializable {
 		return nSkip;
 	}
 
-	@Override
 	public void play(UnoGame game) {
 		// skip the nSkip player
 		for (int i = 0; i < this.nSkip; i++) {

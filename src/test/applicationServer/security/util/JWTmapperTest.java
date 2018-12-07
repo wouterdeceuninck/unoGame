@@ -1,6 +1,5 @@
 package test.applicationServer.security.util;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import main.applicationServer.security.util.JWTmapper;
 import org.json.JSONException;
 import org.junit.Assert;

@@ -109,7 +109,7 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 			dbPortnumber = getLeastLoadedDB();
 			System.out.println(dbPortnumber);
 			Registry registry = LocateRegistry.createRegistry(serverPort);
-			registry.bind("UNOserver", new ServerInterfaceImpl(dbPortnumber, serverPort));
+			registry.bind("UNOserver", new ServerInterfaceImpl(serverPort));
 
 			// update class variables
 			unfilledServers.add(serverPort);

@@ -7,7 +7,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.List;
 
-import main.client.GameData;
 import main.client.GameInfo;
 import main.client.UserController;
 import main.interfaces.lobbyInterface;
@@ -68,7 +67,6 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 
     public void initialize() throws RemoteException {
         setList();
-        server.giveLobby(this);
 
         gamesList.getSelectionModel().selectedItemProperty().addListener(
                 (ChangeListener<String>) (observable, oldValue, newValue) -> {
@@ -105,14 +103,13 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 
     @FXML
     public void exit() throws RemoteException {
-    	server.exit(this);
         Stage stage = (Stage) btn_exit.getScene().getWindow();
         stage.close();
     }
 
     @FXML
     public void send() throws RemoteException {
-    	server.send(chat_input.getText(), this.username);
+    	server.sendToAllPlayers(chat_input.getText(), this.username);
         chat_input.setText("");
     }
     
@@ -134,7 +131,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
  			Parent root1 = (Parent) fxmlLoader.load();
 
             createStage(controller, root1, GAME).show();
-            server.joinGame(controller, gameID, username);
+            server.joinGame(controller, gameID+ "", username);
         } catch (Exception e) {
             e.printStackTrace();
         }

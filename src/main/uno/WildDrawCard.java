@@ -25,7 +25,6 @@ public class WildDrawCard extends Card implements Serializable {
 	}
 
 
-	@Override
 	public void play(UnoGame game) {
 		try {
 			this.myColour = game.getNextPlayer(0).getGameController().askColor();

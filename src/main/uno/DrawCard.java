@@ -19,7 +19,6 @@ public class DrawCard extends Card implements Serializable {
 		return nDraw;
 	}
 
-	@Override
 	public void play(UnoGame game) {
 		try {
 			List<Card> draw = game.draw(nDraw);
