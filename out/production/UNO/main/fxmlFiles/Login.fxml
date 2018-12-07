@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="450.0" prefWidth="800.0" style="-fx-background-color: #E2E2E2;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controller.LoginController">
+   <children>
+      <GridPane prefHeight="450.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="144.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="353.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="299.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane fx:id="pn_Login" visible="false" GridPane.columnIndex="2">
+               <children>
+                  <Button fx:id="btn_Login" alignment="CENTER" mnemonicParsing="false" onAction="#Login" style="-fx-border-color: #488db0; -fx-border-width: 2;" text="Sign in" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <GridPane.margin>
+                        <Insets top="10.0" />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets bottom="3.0" left="25.0" right="25.0" top="3.0" />
+                     </padding>
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="24.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="errorLogin" contentDisplay="CENTER" prefHeight="17.0" prefWidth="211.0" textFill="#e80a0a" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <AnchorPane GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                     <children>
+                        <TextField fx:id="loginUsername" layoutX="76.0" layoutY="134.0" maxWidth="350.0" prefWidth="200.0" promptText="username" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                        <PasswordField fx:id="loginPassword" layoutX="50.0" layoutY="171.0" maxWidth="350.0" prefHeight="25.0" prefWidth="200.0" promptText="password" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </AnchorPane>
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <GridPane fx:id="pn_Register" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="266.0" minHeight="10.0" prefHeight="266.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="220.0" minHeight="10.0" prefHeight="184.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="btn_Register" alignment="CENTER" mnemonicParsing="false" onAction="#Register" style="-fx-border-color: #488db0; -fx-border-width: 2;" text="Register" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="3.0" left="25.0" right="25.0" top="3.0" />
+                     </padding>
+                     <GridPane.margin>
+                        <Insets top="10.0" />
+                     </GridPane.margin>
+                  </Button>
+                  <Label fx:id="errorLogin1" contentDisplay="CENTER" prefHeight="17.0" prefWidth="211.0" textFill="#e80a0a" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <AnchorPane>
+                     <children>
+                        <TextField fx:id="registerUsername" layoutX="50.0" layoutY="125.0" maxWidth="250.0" prefWidth="200.0" promptText="username" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                        <PasswordField fx:id="password1" layoutX="50.0" layoutY="171.0" maxWidth="250.0" prefHeight="25.0" prefWidth="200.0" promptText="repeat password" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                        <PasswordField fx:id="password2" layoutX="50.0" layoutY="159.0" maxWidth="250.0" prefHeight="25.0" prefWidth="200.0" promptText="password" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane alignment="TOP_CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="btn_SignIn" mnemonicParsing="false" onAction="#SignInUp" prefWidth="150.0" style="-fx-border-color: #488db0; -fx-border-width: 2;" text="Sign In" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                     <GridPane.margin>
+                        <Insets bottom="25.0" left="3.0" right="3.0" />
+                     </GridPane.margin>
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="3.0" top="3.0" />
+                     </padding></Button>
+                  <Button fx:id="btn_SignUp" mnemonicParsing="false" onAction="#SignUpUp" prefWidth="150.0" style="-fx-border-color: #488db0; -fx-border-width: 2;" text="Sign Up" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <GridPane.margin>
+                        <Insets left="3.0" right="3.0" top="25.0" />
+                     </GridPane.margin>
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="3.0" top="3.0" />
+                     </padding></Button>
+               </children>
+            </GridPane>
+            <GridPane style="-fx-background-color: #006080;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                <RowConstraints minHeight="206.0" valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+                  <Label text="Welkom" textFill="WHITE" wrapText="true" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="48.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets bottom="20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <ImageView fitHeight="250.0" preserveRatio="true" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="BASELINE" GridPane.vgrow="SOMETIMES">
+                     <image>
+                        <Image url="@../../resources/pictures/UnoLogo.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="10.0" right="10.0" top="20.0" />
+                     </GridPane.margin>
+                  </ImageView>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: #006080; -fx-border-color: #488db0; -fx-border-width: 7.5;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label alignment="CENTER" style="-fx-background-color: #006080;" text="Create new UNO game" textAlignment="CENTER" textFill="WHITE" underline="true" VBox.vgrow="SOMETIMES">
+               <font>
+                  <Font name="PotatoesAndPeasRegular" size="30.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+            <AnchorPane prefHeight="245.0" prefWidth="365.0" style="-fx-background-color: #006080;" VBox.vgrow="SOMETIMES">
+               <children>
+                  <GridPane alignment="CENTER" hgap="10.0" vgap="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="115.0" text="Name:" textFill="WHITE" />
+                        <Label prefHeight="30.0" prefWidth="115.0" text="Number of players: " textFill="WHITE" GridPane.rowIndex="2" />
+                        <Label prefHeight="30.0" prefWidth="115.0" text="Card style:" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="1" />
+                        <TextField fx:id="name" maxWidth="150.0" prefWidth="150.0" promptText="Game name" style="-fx-background-color: #00394d; -fx-text-fill: white;" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                           <GridPane.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </GridPane.margin></TextField>
+                        <ChoiceBox fx:id="themePicker" maxWidth="150.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                        <ChoiceBox fx:id="numberOfPlayersnew" maxWidth="150.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="25.0" top="25.0" />
+               </VBox.margin>
+            </AnchorPane>
+            <HBox alignment="CENTER" VBox.vgrow="SOMETIMES">
+               <children>
+                  <Button fx:id="btn_start" alignment="CENTER" mnemonicParsing="false" onAction="#startGame" style="-fx-background-color: #488db0;" text="Start Game" textAlignment="CENTER" textFill="WHITE" HBox.hgrow="SOMETIMES">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <padding>
+                        <Insets bottom="3.0" left="20.0" right="20.0" top="3.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn_cancel" alignment="CENTER" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #488db0;" text="Cancel" textAlignment="CENTER" textFill="WHITE">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="3.0" left="20.0" right="20.0" top="3.0" />
+                     </padding>
+                     <font>
+                        <Font name="PotatoesAndPeasRegular" size="20.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

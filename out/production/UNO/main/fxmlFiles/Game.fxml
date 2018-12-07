@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane style="-fx-background-color: #006080;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" text="TITEL" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="BigNoodleTitling" size="36.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <GridPane alignment="CENTER" hgap="10.0" style="-fx-background-color: #006080;" vgap="10.0" VBox.vgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" />
+                <ColumnConstraints />
+                  <ColumnConstraints halignment="CENTER" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints valignment="CENTER" />
+                <RowConstraints />
+                <RowConstraints valignment="CENTER" />
+                  <RowConstraints maxHeight="192.0" minHeight="0.0" prefHeight="0.0" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <ImageView fx:id="btn_drawCard" fitHeight="175.0" pickOnBounds="true" preserveRatio="true">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="image_lastcard" fitHeight="175.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </HBox>
+                  <VBox spacing="5.0" style="-fx-background-color: #006080;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <TextField fx:id="opponent411" editable="false" promptText="Player 1" style="-fx-background-color: 000000;">
+                           <font>
+                              <Font name="PotatoesAndPeasRegular" size="24.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </TextField>
+                        <ScrollPane fitToHeight="true" style="-fx-background-color: #006080;" vbarPolicy="NEVER">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <content>
+                              <AnchorPane minWidth="200.0" prefHeight="200.0" style="-fx-background-color: #006080;">
+                                 <children>
+                                    <HBox fx:id="userBox" alignment="CENTER" spacing="5.0" style="-fx-background-color: #006080;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <padding>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0" GridPane.columnIndex="1">
+                     <children>
+                        <HBox fx:id="opponent1Box" alignment="CENTER" minHeight="75.0" prefHeight="75.0" spacing="5.0" />
+                        <TextField fx:id="opponent1" editable="false" promptText="Player 3" style="-fx-background-color: 000000;">
+                           <font>
+                              <Font name="PotatoesAndPeasRegular" size="24.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="1">
+                     <children>
+                        <VBox fx:id="opponent2Box" alignment="CENTER" minWidth="75.0" prefWidth="75.0" spacing="5.0" style="-fx-background-color: #006080;" />
+                        <TextField fx:id="opponent2" editable="false" promptText="Player 2" style="-fx-background-color: 000000;" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font name="PotatoesAndPeasRegular" size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <TextField fx:id="opponent3" editable="false" promptText="Player 4" style="-fx-background-color: 000000;">
+                           <font>
+                              <Font name="PotatoesAndPeasRegular" size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <VBox fx:id="opponent3Box" alignment="CENTER" minWidth="75.0" prefWidth="75.0" spacing="5.0" />
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </GridPane>
+            <HBox fx:id="buttonBox" alignment="BOTTOM_CENTER" spacing="50.0">
+               <children>
+                  <Button fx:id="btn_red" alignment="CENTER" mnemonicParsing="false" opacity="0.75" style="-fx-background-color: #FF5555;" text="Red" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="BigNoodleTitling" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btn_blue" alignment="CENTER" mnemonicParsing="false" opacity="0.75" style="-fx-background-color: #5654FF;" text="Blue" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="BigNoodleTitling" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btn_yellow" alignment="CENTER" mnemonicParsing="false" opacity="0.75" style="-fx-background-color: #FFAA01;" text="Yellow" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="BigNoodleTitling" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btn_green" alignment="CENTER" mnemonicParsing="false" opacity="0.75" style="-fx-background-color: #00AA01;" text="Green" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="BigNoodleTitling" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextArea fx:id="chat_output" prefHeight="150.0" style="text-area-background: #ccddff; -fx-background-color: #ccddff;" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" />
+                           </VBox.margin>
+                        </TextArea>
+                        <HBox alignment="CENTER_LEFT" spacing="25.0" VBox.vgrow="SOMETIMES">
+                           <children>
+                              <TextField fx:id="chat_input" HBox.hgrow="SOMETIMES" />
+                              <Button fx:id="btn_send" alignment="CENTER" mnemonicParsing="false" onAction="#sendMsg" style="-fx-background-color: #e2e2e2;" text="Send" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font name="BigNoodleTitling" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="3.0" left="30.0" right="30.0" top="3.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets bottom="3.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="17.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets top="17.0" />
+                     </padding>
+                  </VBox>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label fx:id="title1" alignment="CENTER" text="Scoreboard" textAlignment="CENTER" textFill="WHITE" underline="true">
+                           <font>
+                              <Font name="BigNoodleTitling" size="24.0" />
+                           </font>
+                        </Label>
+                        <TextArea fx:id="text_scoreboard" editable="false" maxWidth="250.0" style="text-area-background: #ccddff; -fx-background-color: #ccddff;">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </TextArea>
+                        <Button fx:id="btn_exit" alignment="CENTER" mnemonicParsing="false" onAction="#sendMsg" prefHeight="27.0" prefWidth="247.0" style="-fx-background-color: #e2e2e2;" text="Leave Game" textAlignment="CENTER">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font name="BigNoodleTitling" size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="3.0" left="30.0" right="30.0" top="3.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets bottom="3.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
