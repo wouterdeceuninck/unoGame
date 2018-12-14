@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class GameLogicTest {
-    private GameLogic gameLogic = new GameLogic(null, null, null);
+    private GameLogic gameLogic = new GameLogic(null);
 
     @Test
     public void addCardsToGameLogic() {

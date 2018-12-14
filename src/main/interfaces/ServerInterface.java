@@ -4,13 +4,14 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import main.client.GameInfo;
 import main.controller.NewGameInfo;
 import main.exceptions.UsernameAlreadyUsedException;
 import main.uno.Card;
 
 public interface ServerInterface extends Remote, AuthenticationInterface {
 
-    String startNewGame(NewGameInfo newGameInfo) throws RemoteException;
+    String startNewGame(GameInfo gameInfo) throws RemoteException;
 	void joinGame(gameControllerInterface gameController, String gameID, String username) throws RemoteException;
 
 	List<String> getGames() throws RemoteException;

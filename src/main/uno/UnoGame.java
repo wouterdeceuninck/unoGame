@@ -3,6 +3,7 @@ package main.uno;
 import java.rmi.RemoteException;
 import java.util.*;
 
+import main.client.GameInfo;
 import main.controller.NewGameInfo;
 import main.exceptions.GamePlayError;
 import main.exceptions.UnknownUserToGameException;
@@ -50,10 +51,10 @@ public class UnoGame {
 		return playerCount;
 	}
 
-	public UnoGame(NewGameInfo newGameInfo) {
-		this.name = newGameInfo.getGameName();
+	public UnoGame(GameInfo gameInfo) {
+		this.name = gameInfo.getGameName();
 		this.players = new ArrayList<>();
-		this.playerCount = newGameInfo.getNumberOfPlayers();
+		this.playerCount = gameInfo.getAmountOfPlayers();
 
 		deck = new ArrayList<>();
 		pile = new ArrayList<>();

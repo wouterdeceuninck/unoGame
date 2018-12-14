@@ -12,12 +12,6 @@ public class UserController {
     private GameInfo gameInfo;
     private ServerInterface server;
 
-    public UserController(UserInfo userInfo, GameInfo gameInfo, ServerInterface server) {
-        this.userInfo = userInfo;
-        this.gameInfo = gameInfo;
-        this.server = server;
-    }
-
     public UserController(ServerInterface serverInterface) {
         this.server = serverInterface;
     }
@@ -40,6 +34,10 @@ public class UserController {
         this.gameInfo = gameInfo;
     }
 
+    public void sendGameMsg(UserController userController, String message) throws RemoteException {
+        server.sendGameMsg(message, userController.gameInfo.getGameID(), userController.getUserInfo().getUsername());
+    }
+
     public class FailedToLoginException extends RuntimeException {
         public FailedToLoginException(final String message) {
             super(message);
@@ -52,5 +50,9 @@ public class UserController {
 
     public GameInfo getGameInfo() {
         return gameInfo;
+    }
+
+    public ServerInterface getServer() {
+        return server;
     }
 }

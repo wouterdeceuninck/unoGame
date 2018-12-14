@@ -1,5 +1,7 @@
 package main.controller;
 
+import main.client.GameInfo;
+import main.client.UserController;
 import main.interfaces.ServerInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,16 +14,13 @@ import javafx.stage.Stage;
 import java.rmi.RemoteException;
 
 public class PopupNewGameController {
-	private String username;
-	private ServerInterface server;
+	private final UserController userController;
+
 	ObservableList<Integer> themeList = FXCollections.observableArrayList(0, 1);
 	ObservableList<Integer> numberOfPlayerList = FXCollections.observableArrayList(1, 2, 3, 4);
 
-	public PopupNewGameController(String username, ServerInterface server) {
-		this.username = username;
-		this.server = server;
-		themePicker.setItems(themeList);
-		numberOfPlayersnew.setItems(numberOfPlayerList);
+	public PopupNewGameController(UserController userController) {
+		this.userController = userController;
 	}
 
 	@FXML
@@ -46,14 +45,15 @@ public class PopupNewGameController {
 	}
 
 	@FXML
-	public void startGame() throws RemoteException {
-	    server.startNewGame(new NewGameInfo(getGameName(name.getText()), themePicker.getValue(), numberOfPlayersnew.getValue()));
+	public void startGame(final int gameId, final int gameTheme, final String gameName, final int amountOfPlayers) throws RemoteException {
+		userController.setGameInfo(new GameInfo(gameId, gameTheme, gameName, amountOfPlayers));
+	    userController.getServer().startNewGame(userController.getGameInfo());
 		closeWindow();
 	}
 
     private String getGameName(String gameName) {
 		if (gameName.equals("")) {
-			gameName = username + "'s game";
+			gameName = userController.getUserInfo().getUsername() + "'s game";
 		}
 		return gameName;
 	}

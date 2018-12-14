@@ -2,6 +2,7 @@ package main.controller;
 
 import main.client.GameData;
 import main.client.GameInfo;
+import main.client.UserController;
 import main.exceptions.CardNotFoundException;
 import main.interfaces.ServerInterface;
 import main.uno.Card;
@@ -12,21 +13,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameLogic {
-    private final String username;
-    private ServerInterface server;
-    private GameInfo gameInfo;
+    private UserController userController;
     private GameData gameData;
 
-    public GameLogic(ServerInterface server, GameInfo gameInfo, String username) {
-        this.server = server;
-        this.gameInfo = gameInfo;
+    public GameLogic(UserController userController) {
+        this.userController = userController;
         this.gameData = new GameData();
-        this.username = username;
     }
 
     public void sendGameMsg(String text) {
         try {
-            server.sendGameMsg(text, gameInfo.getGameID(), username);
+            userController.sendGameMsg(userController, text);
         } catch (RemoteException e) {
             Logger.getLogger("logger").log(Level.SEVERE, "Remote error exception!");
         }
@@ -41,7 +38,7 @@ public class GameLogic {
     }
 
     public GameInfo getGameInfo() {
-        return gameInfo;
+        return userController.getGameInfo();
     }
 
     public void removeCard(Card pickedCard) throws CardNotFoundException{

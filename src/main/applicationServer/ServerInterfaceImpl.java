@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import main.applicationServer.security.JwtFactory;
 import main.applicationServer.security.Token;
+import main.client.GameInfo;
 import main.controller.NewGameInfo;
 import main.exceptions.GameNotFoundException;
 import main.exceptions.GamePlayError;
@@ -87,8 +88,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public String startNewGame(NewGameInfo newGameInfo) throws RemoteException {
-		UnoGame uno = new UnoGame(newGameInfo);
+	public String startNewGame(GameInfo gameInfo) throws RemoteException {
+		UnoGame uno = new UnoGame(gameInfo);
 		games.add(uno);
 		String gameId = serverPortNumber + ":" + games.size();
 		uno.setGameId(gameId);

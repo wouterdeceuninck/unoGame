@@ -26,7 +26,7 @@ import javax.security.auth.login.FailedLoginException;
 
 public class LoginController {
 
-	private ServerInterface server = null;
+	public ServerInterface server = null;
 	private String username = null;
 	private UserController userController = null;
     private static final int DISPATCHER_PORT = 1099;
@@ -87,7 +87,7 @@ public class LoginController {
 	@FXML
     private void Register() {
 			try {
-				registerLogic();
+				registerLogic(registerUsername.getText(), password1.getText(), password2.getText());
 				startLobby();
 			} catch (FailedLoginException | InvalidInputException e) {
 				popUpAlert(e.getMessage());
@@ -104,10 +104,10 @@ public class LoginController {
 		}
 	}
 
-	public void registerLogic() throws FailedLoginException, InvalidInputException {
-		if (isValidRegisterInput(registerUsername.getText(), password1.getText(), password2.getText())) {
-				try {
-				userController.registerToServer(registerUsername.getText(), password1.getText());
+	public void registerLogic(final String username, final String password1, final String password2) throws FailedLoginException, InvalidInputException {
+		if (isValidRegisterInput(username, password1, password2)) {
+			try {
+				userController.registerToServer(username, password1);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -149,7 +149,7 @@ public class LoginController {
 	private void startLobby() {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/fxmlFiles/Lobby.fxml"));
-			fxmlLoader.setController(new LobbyController(userController, server));
+			fxmlLoader.setController(new LobbyController(userController));
 			Parent root1 = fxmlLoader.load();
 
 			Stage stage = new Stage();

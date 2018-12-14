@@ -81,9 +81,9 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 	private TextArea chat_output, text_scoreboard;
     private String nextPlayer;
 
-    public GameController(UserController userController, ServerInterface server) throws RemoteException, FileNotFoundException {
+    public GameController(UserController userController) throws RemoteException, FileNotFoundException {
 	    this.userController = userController;
-		this.gameLogic = new GameLogic(server, userController.getGameInfo(), userController.getUserInfo().getUsername());
+		this.gameLogic = new GameLogic(userController);
 
         cardsList = new ArrayList<>();
         opponents = new ArrayList<>();
