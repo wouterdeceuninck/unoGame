@@ -1,4 +1,4 @@
-package main.uno;
+package main.applicationServer.uno;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -9,7 +9,7 @@ public class DrawCard extends Card implements Serializable {
 	private static final long serialVersionUID = 1954659785727378897L;
 	private int nDraw;
 
-	public DrawCard(int colour, int nDraw) {
+	public DrawCard(CardColours colour, int nDraw) {
 		super(colour, "PLUS2");
 		this.nDraw = nDraw;
 		this.myScore = 20;
@@ -20,13 +20,9 @@ public class DrawCard extends Card implements Serializable {
 	}
 
 	public void play(UnoGame game) {
-		try {
-			List<Card> draw = game.draw(nDraw);
-			game.getNextPlayer(1).getGameController().addCards(draw);
-			game.getNextPlayer(1).getCards().addAll(draw);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+		List<Card> draw = game.draw(nDraw);
+		game.getNextPlayer(1).addCards(draw);
+		game.getNextPlayer(1).getCards().addAll(draw);
 		game.goToNextPlayer();
 	}
 }

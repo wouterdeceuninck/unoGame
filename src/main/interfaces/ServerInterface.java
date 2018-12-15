@@ -5,9 +5,8 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import main.client.GameInfo;
-import main.controller.NewGameInfo;
 import main.exceptions.UsernameAlreadyUsedException;
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 public interface ServerInterface extends Remote, AuthenticationInterface {
 

@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 public class Database {
 
@@ -58,8 +58,8 @@ public class Database {
 		FileInputStream fileInputStream = null;
 		try {
 			fileInputStream = new FileInputStream(filepath);
-			keystore.load(fileInputStream, "main/uno".toCharArray());
-			privateKey = (PrivateKey) keystore.getKey("main/uno", "main/uno".toCharArray());
+			keystore.load(fileInputStream, "main/applicationServer/uno".toCharArray());
+			privateKey = (PrivateKey) keystore.getKey("main/applicationServer/uno", "main/applicationServer/uno".toCharArray());
 			signature = Signature.getInstance("SHA256withRSA");
 		} catch (FileNotFoundException e) {
 			System.out.print("Keystore not initiated");

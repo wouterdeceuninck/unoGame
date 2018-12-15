@@ -1,4 +1,4 @@
-package main.uno;
+package main.applicationServer.uno;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ public class SkipCard extends Card implements Serializable {
 	private static final long serialVersionUID = 1682533977395640829L;
 	private int nSkip;
 
-	public SkipCard(int colour, int nSkip) {
+	public SkipCard(CardColours colour, int nSkip) {
 		super(colour, "SKIP");
 		this.nSkip = nSkip;
 		this.myScore = 20;

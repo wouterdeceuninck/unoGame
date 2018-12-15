@@ -33,7 +33,7 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 	private int serverPort;
 
 	// private String uri
-	private String uri = ".\\main.uno.db";
+	private String uri = ".\\main.applicationServer.uno.db";
 
 	private Map<Integer, Integer> serverToDB;
 

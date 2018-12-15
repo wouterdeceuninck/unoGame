@@ -5,7 +5,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.uno.Card;
+import main.applicationServer.uno.Card;
+import main.applicationServer.uno.CardColours;
 
 public interface gameControllerInterface extends Remote {
 	// main.controller methods
@@ -63,7 +64,7 @@ public interface gameControllerInterface extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public int askColor() throws RemoteException;
+	public CardColours askColor() throws RemoteException;
 
 	/**
 	 * @param info

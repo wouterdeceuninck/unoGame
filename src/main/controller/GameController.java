@@ -6,10 +6,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+import main.applicationServer.uno.CardColours;
 import main.client.UserController;
 import main.exceptions.NoCardsFoundExcepion;
 import main.interfaces.gameControllerInterface;
-import main.interfaces.ServerInterface;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 public class GameController extends UnicastRemoteObject implements gameControllerInterface {
 
@@ -45,7 +45,7 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 	private List<Opponent> opponents;
 	private boolean readyToStart, boolDrawCard, colourSelected;
 
-	private int selectedColor;
+	private CardColours selectedColor;
 
 	// back-image
 	private Image backImage;
@@ -105,25 +105,25 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 
 		btn_red.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			this.colourSelected = true;
-			this.selectedColor = Card.COLOUR_RED;
+			this.selectedColor = CardColours.RED;
 			event.consume();
 		});
 
 		btn_blue.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			this.colourSelected = true;
-			this.selectedColor = Card.COLOUR_BLUE;
+			this.selectedColor = CardColours.BLUE;
 			event.consume();
 		});
 
 		btn_yellow.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			this.colourSelected = true;
-			this.selectedColor = Card.COLOUR_YELLOW;
+			this.selectedColor = CardColours.YELLOW;
 			event.consume();
 		});
 
 		btn_green.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			this.colourSelected = true;
-			this.selectedColor = Card.COLOUR_GREEN;
+			this.selectedColor = CardColours.GREEN;
 			event.consume();
 		});
 
@@ -318,13 +318,13 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 	}
 
 	@Override
-	public int askColor() throws RemoteException {
+	public CardColours askColor() throws RemoteException {
 		setMsg("Chose a color!");
 		btn_blue.setOpacity(1);
 		btn_green.setOpacity(1);
 		btn_red.setOpacity(1);
 		btn_yellow.setOpacity(1);
-		this.selectedColor = Card.COLOUR_BLUE;
+		this.selectedColor = CardColours.BLUE;
 		this.colourSelected = false;
 		while (!colourSelected) {
 			try {

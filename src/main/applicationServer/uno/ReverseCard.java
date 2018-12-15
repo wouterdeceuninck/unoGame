@@ -1,4 +1,4 @@
-package main.uno;
+package main.applicationServer.uno;
 
 import java.io.Serializable;
 
@@ -6,8 +6,8 @@ public class ReverseCard extends Card implements Serializable {
 
 	private static final long serialVersionUID = 5745108777726812406L;
 
-	public ReverseCard(int colour) {
-		super(colour, "REVERSE");
+	public ReverseCard(CardColours cardColours) {
+		super(cardColours, "REVERSE");
 		this.myScore = 20;
 	}
 

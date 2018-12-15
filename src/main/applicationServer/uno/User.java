@@ -1,4 +1,4 @@
-package main.uno;
+package main.applicationServer.uno;
 
 
 public class User {

@@ -10,7 +10,7 @@ import java.util.List;
 
 import main.exceptions.UnAutherizedException;
 import main.exceptions.UsernameAlreadyUsedException;
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 public interface dbInterface extends Remote {
 	/**

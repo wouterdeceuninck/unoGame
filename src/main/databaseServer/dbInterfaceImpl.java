@@ -19,7 +19,7 @@ import java.util.List;
 import main.exceptions.UnAutherizedException;
 import main.exceptions.UsernameAlreadyUsedException;
 import main.interfaces.dbInterface;
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 public class dbInterfaceImpl extends UnicastRemoteObject implements dbInterface {
 

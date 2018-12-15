@@ -4,31 +4,24 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import main.applicationServer.security.JwtFactory;
 import main.applicationServer.security.Token;
 import main.client.GameInfo;
-import main.controller.NewGameInfo;
 import main.exceptions.GameNotFoundException;
 import main.exceptions.GamePlayError;
 import main.exceptions.UnAutherizedException;
 import main.exceptions.UsernameAlreadyUsedException;
-import main.interfaces.clientInterface;
-import main.interfaces.dbInterface;
 import main.interfaces.dispatcherInterface;
 import main.interfaces.gameControllerInterface;
-import main.interfaces.lobbyInterface;
 import main.interfaces.ServerInterface;
-import main.uno.Card;
-import main.uno.Player;
-import main.uno.UnoGame;
+import main.applicationServer.uno.Card;
+import main.applicationServer.uno.Player;
+import main.applicationServer.uno.UnoGame;
 
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 	public static Logger logger = Logger.getLogger(ServerInterfaceImpl.class.getName());
@@ -137,8 +130,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	@Override
 	public void openLobby(gameControllerInterface gci) {
 		for (UnoGame game : games) {
-			for (Player player : game.getPlayers()) {
-				if (gci.hashCode()==player.getGameController().hashCode()) {
+			for (PlayerInterface player : game.getPlayers()) {
+				if (gci.hashCode()==player.hashCode()) {
 					game.endGame();
 				}
 			}

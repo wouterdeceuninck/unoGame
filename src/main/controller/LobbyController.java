@@ -23,7 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import main.uno.Player;
+import main.applicationServer.uno.Player;
 
 public class LobbyController extends UnicastRemoteObject implements lobbyInterface{
 

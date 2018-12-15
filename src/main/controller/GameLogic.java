@@ -4,8 +4,7 @@ import main.client.GameData;
 import main.client.GameInfo;
 import main.client.UserController;
 import main.exceptions.CardNotFoundException;
-import main.interfaces.ServerInterface;
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 import java.rmi.RemoteException;
 import java.util.List;

@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import main.uno.Card;
+import main.applicationServer.uno.Card;
 
 public interface clientInterface extends Remote {
 
