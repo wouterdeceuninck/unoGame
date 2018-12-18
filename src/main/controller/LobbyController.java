@@ -56,13 +56,14 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     }
 
     public void initialize() throws RemoteException {
-        setList();
 
+        gamesList = new ListView();
         gamesList.getSelectionModel().selectedItemProperty().addListener(
                 (ChangeListener<String>) (observable, oldValue, newValue) -> {
                     List<String> temp = Arrays.asList(newValue.split("\t"));
                     setCurrentGame(this.userController.getGameInfo());
                 });
+        setList();
         chat.setEditable(false);
         lbl_username.setText(username);
         this.gamesList = new ListView(gameData);
@@ -176,7 +177,6 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/fxmlFiles/PopupNewGame.fxml"));
             fxmlLoader.setController(new PopupNewGameController(this.userController));
 
-            
             Parent root1 = fxmlLoader.load();
 
             Stage stage = new Stage();

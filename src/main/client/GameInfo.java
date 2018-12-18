@@ -3,19 +3,19 @@ package main.client;
 import java.io.Serializable;
 
 public class GameInfo implements Serializable {
-    private final int gameID;
+    private final String gameID;
     private final int gameTheme;
     private final String gameName;
     private final int amountOfPlayers;
 
-    public GameInfo(int gameID, int gameTheme, String gameName, int amountOfPlayers) {
+    public GameInfo(String gameID, int gameTheme, String gameName, int amountOfPlayers) {
         this.gameID = gameID;
         this.gameTheme = gameTheme;
         this.gameName = gameName;
         this.amountOfPlayers = amountOfPlayers;
     }
 
-    public int getGameID() {
+    public String getGameID() {
         return gameID;
     }
 
@@ -32,6 +32,6 @@ public class GameInfo implements Serializable {
     }
 
     public boolean isValid() {
-        return gameName!=null && !gameName.isEmpty() && gameID!=0 && amountOfPlayers!=0;
+        return gameName!=null && !gameName.isEmpty() && !gameID.isEmpty() && amountOfPlayers!=0;
     }
 }

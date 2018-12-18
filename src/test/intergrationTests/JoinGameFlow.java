@@ -8,6 +8,7 @@ import main.exceptions.InvalidInputException;
 import org.junit.Test;
 
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 public class JoinGameFlow {
     private void startDispatcher() {
@@ -24,7 +25,7 @@ public class JoinGameFlow {
     @Test
     public void createGame() throws InvalidInputException, RemoteException {
         LobbyController lobbyController = getLobbyController();
-        lobbyController.getUserController().setGameInfo(new GameInfo(1, 1, "MyNewGame", 3));
+        lobbyController.getUserController().setGameInfo(new GameInfo(UUID.randomUUID().toString(), 1, "MyNewGame", 3));
         lobbyController.createNewGameLogic();
     }
 }

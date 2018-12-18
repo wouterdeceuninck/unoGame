@@ -2,6 +2,7 @@ package main.applicationServer.uno;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import main.applicationServer.PlayerInterface;
@@ -82,6 +83,11 @@ public class Player implements PlayerInterface {
 	@Override
 	public String getLog() {
 		return "";
+	}
+
+	@Override
+	public Deque<Card> getPile() {
+		return null;
 	}
 
 	@Override

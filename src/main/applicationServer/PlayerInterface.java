@@ -3,6 +3,7 @@ package main.applicationServer;
 import main.applicationServer.uno.Card;
 import main.applicationServer.uno.CardColours;
 
+import java.util.Deque;
 import java.util.List;
 
 public interface PlayerInterface {
@@ -18,4 +19,5 @@ public interface PlayerInterface {
     void setPlayerNotReady();
     CardColours askColor();
     String getLog();
+    Deque<Card> getPile();
 }

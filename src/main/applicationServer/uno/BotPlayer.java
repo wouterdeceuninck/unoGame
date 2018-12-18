@@ -2,14 +2,16 @@ package main.applicationServer.uno;
 
 import main.applicationServer.PlayerInterface;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class BotPlayer implements PlayerInterface {
     private final String name;
     private StringBuilder botLog;
     private List<Card> cards;
-    private List<Card> pile;
+    private Deque<Card> pile;
     private boolean ready;
 
     public BotPlayer(String name){
@@ -17,7 +19,7 @@ public class BotPlayer implements PlayerInterface {
         this.botLog = new StringBuilder();
         this.name = name;
         this.cards = new ArrayList<>();
-        this.pile = new ArrayList<>();
+        this.pile = new ArrayDeque<>();
     }
 
     @Override
@@ -37,14 +39,14 @@ public class BotPlayer implements PlayerInterface {
 
     @Override
     public void addPile(Card card) {
-        this.pile.add(0, card);
+        this.pile.push(card);
         botLog.append("Card played: " + card.toString() + "\n");
     }
 
     @Override
     public Card getCard() {
         Card pickedCard = this.cards.stream()
-                .filter(card -> pile.get(0).canPlayOn(card))
+                .filter(card -> pile.peek().canPlayOn(card))
                 .findAny()
                 .orElse(null);
         botLog.append("Amount of cards left: " + cards.size() + "\n");
@@ -84,5 +86,10 @@ public class BotPlayer implements PlayerInterface {
     @Override
     public String getLog() {
         return this.botLog.toString();
+    }
+
+    @Override
+    public Deque<Card> getPile() {
+        return this.pile;
     }
 }

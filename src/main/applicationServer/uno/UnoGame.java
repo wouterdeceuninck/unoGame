@@ -211,19 +211,18 @@ public class UnoGame {
         addNormalCards(cardColours);
     }
 
-    private void addNormalCards(CardColours c) {
-        IntStream.rangeClosed(1, 9).forEach(i -> {
-            createNormalCards(c, i);
-        });
+    private void addNormalCards(CardColours cardColours) {
+        for (CardSymbol cardSymbol: CardSymbol.values()){
+        	createNormalCards(cardColours, cardSymbol);
+		}
 	}
 
-    private void createNormalCards(CardColours c, int i) {
-        deck.add(new Card(c, i));
-        deck.add(new Card(c, i));
+    private void createNormalCards(CardColours c, CardSymbol cardSymbol) {
+        deck.add(new Card(c, cardSymbol));
+        deck.add(new Card(c, cardSymbol));
     }
 
     private void addSpecialCards(CardColours c) {
-		deck.add(new Card(c, 0));
 		deck.add(new SkipCard(c, 1));
 		deck.add(new SkipCard(c, 1));
 		deck.add(new ReverseCard(c));

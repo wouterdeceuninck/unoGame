@@ -10,7 +10,7 @@ public class WildDrawCard extends Card implements Serializable {
 	private int nDraw;
 
 	public WildDrawCard(int nDraw) {
-		super(CardColours.NONE, "WILDDRAWCARD");
+		super(CardColours.NONE, CardSymbol.WILDDRAWCARD);
 		this.nDraw = nDraw;
 		this.myScore = 50;
 	}

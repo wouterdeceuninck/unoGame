@@ -9,21 +9,14 @@ public class Card implements Serializable {
 	private static final long serialVersionUID = -467804728581745981L;
 
 	public CardColours myColour;
-	public String mySymbol;
+	public CardSymbol mySymbol;
 	public String cardName;
 	public int myScore;
 
-	public Card(CardColours colour, String symbol) {
+	public Card(CardColours colour, CardSymbol symbol) {
 		myColour = colour;
 		mySymbol = symbol;
 		cardName = mySymbol + "_" + colour + ".png";
-	}
-
-	public Card(CardColours colour, int number) {
-		myColour = colour;
-		mySymbol = String.valueOf(number);
-		cardName = mySymbol + "_" + colour + ".png";
-		myScore = number;
 	}
 
 	public Card(Card selectedCard) {
@@ -36,12 +29,14 @@ public class Card implements Serializable {
 		return myColour.colour;
 	}
 
-	public String getSymbol() {
+	public CardSymbol getSymbol() {
 		return mySymbol;
 	}
 
 	public boolean canPlayOn(Card card) {
-		return (card.myColour == myColour || card.mySymbol.equals(mySymbol));
+		boolean sameColorOrSymbol = card.myColour == myColour || card.mySymbol.equals(mySymbol);
+		boolean isWildCard = this.mySymbol.equals("WILDCARD") || this.mySymbol.equals("WILDDRAWCARD");
+		return isWildCard || sameColorOrSymbol;
 	}
 
 	@Override

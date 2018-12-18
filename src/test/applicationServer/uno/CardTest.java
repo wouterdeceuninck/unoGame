@@ -126,13 +126,13 @@ public class CardTest {
     }
 
     private void initStartingDeck() {
-        yellowOne = new Card(CardColours.YELLOW, 1);
-        blueTwo = new Card(CardColours.BLUE, 2);
-        redThree = new Card(CardColours.RED, 3);
-        greenFour = new Card(CardColours.GREEN, 4);
-        yellowFive = new Card(CardColours.YELLOW, 5);
-        blueSix = new Card(CardColours.BLUE, 6);
-        redSeven = new Card(CardColours.RED, 7);
-        greenEight = new Card(CardColours.GREEN, 8);
+        yellowOne = new Card(CardColours.YELLOW, CardSymbol.ONE);
+        blueTwo = new Card(CardColours.BLUE, CardSymbol.TWO);
+        redThree = new Card(CardColours.RED, CardSymbol.THREE);
+        greenFour = new Card(CardColours.GREEN, CardSymbol.FOUR);
+        yellowFive = new Card(CardColours.YELLOW, CardSymbol.FIVE);
+        blueSix = new Card(CardColours.BLUE, CardSymbol.SIX);
+        redSeven = new Card(CardColours.RED, CardSymbol.SEVEN);
+        greenEight = new Card(CardColours.GREEN, CardSymbol.EIGHT);
     }
 }

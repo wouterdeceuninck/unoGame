@@ -15,7 +15,7 @@ public interface ServerInterface extends Remote, AuthenticationInterface {
 
 	List<String> getGames() throws RemoteException;
 	void sendToAllPlayers(String s, String username) throws RemoteException;
-	void sendGameMsg(String msg, int gameID, String username) throws RemoteException;
+	void sendGameMsg(String msg, String gameID, String username) throws RemoteException;
 	List<Card> getCards(String username, String gameID) throws RemoteException;
 	void openLobby(gameControllerInterface gci) throws RemoteException;
 

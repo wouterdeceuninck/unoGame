@@ -81,7 +81,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public String startNewGame(GameInfo gameInfo) throws RemoteException {
+	public String startNewGame(GameInfo gameInfo) {
 		UnoGame uno = new UnoGame(gameInfo);
 		games.add(uno);
 		String gameId = serverPortNumber + ":" + games.size();
@@ -112,8 +112,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public void sendGameMsg(String msg, int gameID, String username) throws RemoteException {
-		games.get(gameID).sendMsg(username + ": " + msg);
+	public void sendGameMsg(String msg, String gameID, String username) throws RemoteException {
+		getGameByID(gameID).sendMsg(username + ": " + msg);
 	}
 
     @Override

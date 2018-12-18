@@ -45,7 +45,7 @@ public class PopupNewGameController {
 	}
 
 	@FXML
-	public void startGame(final int gameId, final int gameTheme, final String gameName, final int amountOfPlayers) throws RemoteException {
+	public void startGame(final String gameId, final int gameTheme, final String gameName, final int amountOfPlayers) throws RemoteException {
 		userController.setGameInfo(new GameInfo(gameId, gameTheme, gameName, amountOfPlayers));
 	    userController.getServer().startNewGame(userController.getGameInfo());
 		closeWindow();

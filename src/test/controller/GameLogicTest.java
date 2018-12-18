@@ -1,6 +1,7 @@
 package test.controller;
 
 import main.applicationServer.uno.CardColours;
+import main.applicationServer.uno.CardSymbol;
 import main.controller.GameLogic;
 import main.exceptions.CardNotFoundException;
 import main.applicationServer.uno.Card;
@@ -16,7 +17,7 @@ public class GameLogicTest {
     @Test
     public void addCardsToGameLogic() {
         gameLogic.addCards(getDummyCards());
-        Card pickedCard = new Card(CardColours.BLUE, 1);
+        Card pickedCard = new Card(CardColours.BLUE, CardSymbol.ONE);
         gameLogic.removeCard(pickedCard);
         Assert.assertFalse(gameLogic.getGameData().getCards().contains(pickedCard));
     }
@@ -24,17 +25,17 @@ public class GameLogicTest {
     @Test(expected = CardNotFoundException.class)
     public void addCardsToGameLogic_expectException() {
         gameLogic.addCards(getDummyCards());
-        Card pickedCard = new Card(CardColours.BLUE, 0);
+        Card pickedCard = new Card(CardColours.BLUE, CardSymbol.NULL);
         gameLogic.removeCard(pickedCard);
     }
 
     private List<Card> getDummyCards() {
         List<Card> dummyCards = new ArrayList<>();
-        dummyCards.add(new Card(CardColours.BLUE, 2));
-        dummyCards.add(new Card(CardColours.RED, 1));
-        dummyCards.add(new Card(CardColours.GREEN, 8));
-        dummyCards.add(new Card(CardColours.YELLOW, 7));
-        dummyCards.add(new Card(CardColours.YELLOW, 9));
+        dummyCards.add(new Card(CardColours.BLUE, CardSymbol.TWO));
+        dummyCards.add(new Card(CardColours.RED, CardSymbol.ONE));
+        dummyCards.add(new Card(CardColours.GREEN, CardSymbol.EIGHT));
+        dummyCards.add(new Card(CardColours.YELLOW, CardSymbol.SEVEN));
+        dummyCards.add(new Card(CardColours.YELLOW, CardSymbol.NINE));
         return dummyCards;
     }
 }
