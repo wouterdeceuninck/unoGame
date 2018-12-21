@@ -1,4 +1,4 @@
-package main.controller;
+package main.client.controller;
 
 import main.client.GameData;
 import main.client.GameInfo;

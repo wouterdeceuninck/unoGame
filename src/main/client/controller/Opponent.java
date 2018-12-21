@@ -1,4 +1,4 @@
-package main.controller;
+package main.client.controller;
 
 public class Opponent {
 	private final String name;

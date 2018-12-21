@@ -13,7 +13,7 @@ public class WildCard extends Card implements Serializable {
 
 	@Override
 	public boolean canPlayOn(Card card) {
-		return true;
+		return this.myColour == card.myColour;
 	}
 
 	public void play(UnoGame game) {

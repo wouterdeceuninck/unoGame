@@ -1,4 +1,4 @@
-package main.controller;
+package main.client.controller;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -148,7 +148,7 @@ public class LoginController {
 
 	private void startLobby() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/fxmlFiles/Lobby.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/Lobby.fxml"));
 			fxmlLoader.setController(new LobbyController(userController));
 			Parent root1 = fxmlLoader.load();
 

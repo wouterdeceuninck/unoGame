@@ -2,7 +2,6 @@ package main.applicationServer.uno;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.stream.IntStream;
 
 import main.applicationServer.PlayerInterface;
 import main.client.GameInfo;
@@ -12,7 +11,7 @@ import main.interfaces.dbInterface;
 
 public class UnoGame {
 	private List<PlayerInterface> players;
-	private List<Card> pile;
+	private Deque<Card> pile;
 	private List<Card> deck;
 
 	private int myPlayDirection;
@@ -37,7 +36,7 @@ public class UnoGame {
 		this.playerCount = gameInfo.getAmountOfPlayers();
 
 		deck = new ArrayList<>();
-		pile = new ArrayList<>();
+		pile = new ArrayDeque<>();
 		players = new ArrayList<>();
 		newDeck();
 	}
@@ -79,7 +78,7 @@ public class UnoGame {
     private void dealCards() {
 		Card card = getCardFromDeck();
 		players.forEach(player -> player.addCards(draw(7)));
-		pile.add(0, card);
+		pile.push(card);
 		players.forEach(player -> player.addPile(card));
 		initNewGame(card);
 	}
@@ -101,11 +100,11 @@ public class UnoGame {
 				addCardToPlayer(currentPlayer);
 				return null;
 			}
-			if (!pile.get(0).canPlayOn(card)) {
-				throw new WrongCardOnPileException("Cannot play " + card.toString() + " on " + pile.get(0));
+			if (!pile.peek().canPlayOn(card)) {
+				throw new WrongCardOnPileException("Cannot play " + card.toString() + " on " + pile.peek());
 			}
 
-			pile.add(0, card);
+			pile.push(card);
 			playCard(currentPlayer, card);
 
 			if (currentPlayer.getCards().size() == 0) {
@@ -126,23 +125,13 @@ public class UnoGame {
 		goToNextPlayer();
 	}
 
-	public void playCard(PlayerInterface player, Card card) throws RemoteException {
+	private void playCard(PlayerInterface player, Card card) throws RemoteException {
 		boolean valid = false;
-		Iterator<Card> newIterator = player.getCards().iterator();
-		while (newIterator.hasNext()) {
-			Card c = newIterator.next();
-			if (c.cardName.equals(card.cardName)) {
-				valid = true;
-				player.getCards().remove(c);
-				break;
-			}
-		}
-		if (valid) {
-            updateAllPlayers(player, card);
-        } else {
-			player.addCards(draw(1));
-			System.out.println("An error occured (a card was played when it was not part of the player's hand)");
-		}
+		player.getCards().remove(
+		        player.getCards().stream()
+                    .filter(card1 -> card1.equals(card))
+                    .findFirst()
+                    .orElseThrow(() -> new NotInPlayersHand("An error occured (a card was played when it was not part of the player's hand)")));
 
 	}
 
@@ -212,7 +201,7 @@ public class UnoGame {
     }
 
     private void addNormalCards(CardColours cardColours) {
-        for (CardSymbol cardSymbol: CardSymbol.values()){
+        for (CardSymbol cardSymbol: CardSymbol.getNormalSymbols()){
         	createNormalCards(cardColours, cardSymbol);
 		}
 	}
@@ -266,5 +255,11 @@ public class UnoGame {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    private class NotInPlayersHand extends RuntimeException {
+        public NotInPlayersHand(String message) {
+            super(message);
+        }
     }
 }

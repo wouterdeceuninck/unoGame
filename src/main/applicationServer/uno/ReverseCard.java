@@ -11,11 +11,6 @@ public class ReverseCard extends Card implements Serializable {
 		this.myScore = 20;
 	}
 
-	@Override
-	public boolean canPlayOn(Card card) {
-		return (card.getColour() == this.getColour() || card.getSymbol().equals(this.getSymbol()));
-	}
-
 	public void play(UnoGame game) {
 		game.reversePlayDirection();
 	}

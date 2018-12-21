@@ -37,7 +37,6 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 
 	private Map<Integer, Integer> serverToDB;
 
-	private final int MAXLOAD = 20;
 	private final int dbPortnumber = 1300;
 	private final int NUMBER_OF_DATABASES = 4;
 
@@ -172,33 +171,4 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 		return portnumber;
 
 	}
-
-	@Override
-	public void updateInfo(int serverPort, int load) throws RemoteException {
-		serverStatus.put(serverPort, load);
-		if (load >= MAXLOAD) {
-			try {
-				unfilledServers.remove(serverPort);
-				fullServers.add(serverPort);
-			} catch (IndexOutOfBoundsException e) {
-			}
-		} else {
-			try {
-				unfilledServers.add(serverPort);
-				fullServers.remove(serverPort);
-			} catch (IndexOutOfBoundsException e) {
-
-			}
-		}
-		if (unfilledServers.isEmpty()) {
-			Thread newServerThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					createServer();
-				}
-			});
-			newServerThread.start();
-		}
-	}
-
 }

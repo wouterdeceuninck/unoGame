@@ -9,7 +9,7 @@ import main.applicationServer.uno.Card;
 import main.applicationServer.uno.CardColours;
 
 public interface gameControllerInterface extends Remote {
-	// main.controller methods
+	// main.client.controller methods
 	/**
 	 * @param msg
 	 * @throws RemoteException

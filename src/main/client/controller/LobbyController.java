@@ -1,4 +1,4 @@
-package main.controller;
+package main.client.controller;
 
 
 import java.io.IOException;
@@ -121,7 +121,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 
     public void startGame() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/fxmlFiles/Game.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/Game.fxml"));
             GameController controller = new GameController(userController);
             fxmlLoader.setController(controller);
  			Parent root1 = (Parent) fxmlLoader.load();
@@ -149,7 +149,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
                 try {
                     userController.getServer().openLobby(controller);
                     LobbyController lobby = new LobbyController(userController);
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/fxmlFiles/Lobby.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/Lobby.fxml"));
                     fxmlLoader.setController(lobby);
 
                     Parent root1 = (Parent) fxmlLoader.load();
@@ -174,7 +174,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 	
 	public void startPopupNewGame(){
 		try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/fxmlFiles/PopupNewGame.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/PopupNewGame.fxml"));
             fxmlLoader.setController(new PopupNewGameController(this.userController));
 
             Parent root1 = fxmlLoader.load();

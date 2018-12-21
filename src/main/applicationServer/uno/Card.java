@@ -34,8 +34,8 @@ public class Card implements Serializable {
 	}
 
 	public boolean canPlayOn(Card card) {
-		boolean sameColorOrSymbol = card.myColour == myColour || card.mySymbol.equals(mySymbol);
-		boolean isWildCard = this.mySymbol.equals("WILDCARD") || this.mySymbol.equals("WILDDRAWCARD");
+		boolean sameColorOrSymbol = card.myColour == myColour || card.mySymbol == mySymbol;
+		boolean isWildCard = this.mySymbol == CardSymbol.WILDCARD || this.mySymbol == CardSymbol.WILDDRAWCARD;
 		return isWildCard || sameColorOrSymbol;
 	}
 
@@ -48,6 +48,15 @@ public class Card implements Serializable {
 		cardString.append(mySymbol);
 		return cardString.toString();
 	}
+
+	@Override
+    public boolean equals(Object object) {
+        Card card = (Card) object;
+        boolean sameSymbol = card.mySymbol == this.mySymbol;
+        boolean sameColor= card.myColour == this.myColour;
+
+        return sameColor && sameColor;
+    }
 
 	public Image getImage() {
 		return new Image(Card.class.getResourceAsStream("SEVEN_YELLOW.png"));

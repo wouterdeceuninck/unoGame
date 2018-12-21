@@ -17,9 +17,9 @@ public class UnoGameTest {
     @Test
     public void createGame_deckValidation() {
         UnoGame unoGame = new UnoGame(new GameInfo(UUID.randomUUID().toString(), 1, "GameName", 2));
-        unoGame.newDeck();
-        Assert.assertTrue(unoGame.getDeck().stream().filter(card -> card.myColour == CardColours.BLUE && card.myScore == 1).count() == 4L);
-        Assert.assertTrue(unoGame.getDeck().stream().filter(card -> card.myColour == CardColours.GREEN && card.mySymbol.equals("REVERSE")).count() == 4L);
+        Assert.assertTrue(unoGame.getDeck().stream().filter(card -> card.myColour == CardColours.BLUE && card.mySymbol== CardSymbol.ONE).count() == 2L);
+        Assert.assertTrue(unoGame.getDeck().stream().filter(card -> card.myColour == CardColours.GREEN && card.mySymbol == CardSymbol.REVERSECARD).count() == 4L);
+
     }
 
     @Test
@@ -65,8 +65,6 @@ public class UnoGameTest {
                     return Optional.of("Cannot Play card exception.\n"
                             + "TopCard: " + topCard.toString() + "\n"
                             + "CardPlayed: " + temp.toString());
-                } else {
-                    topCard = temp;
                 }
             }
         } catch (NoSuchElementException e ){
@@ -114,18 +112,18 @@ public class UnoGameTest {
         try {
             if (!threadPool.awaitTermination(150, TimeUnit.SECONDS)) {
                 threadPool.shutdownNow();
-                games.forEach(game -> {
-                    AtomicInteger iter = new AtomicInteger(0);
-                    game.getPlayers().forEach(playerInterface -> {
-                        Optional<String> s = validatePile(playerInterface.getPile());
-                        System.out.println(s.orElse(iter.getAndIncrement() + "\t\t\t\t\tNo error"));
-                        Assert.assertTrue(!s.isPresent());
-                    });
-                });
             }
         } catch (InterruptedException ex) {
             threadPool.shutdownNow();
             Thread.currentThread().interrupt();
         }
+        games.forEach(game -> {
+            AtomicInteger iter = new AtomicInteger(0);
+            game.getPlayers().forEach(playerInterface -> {
+                Optional<String> s = validatePile(playerInterface.getPile());
+                System.out.println(s.orElse(iter.getAndIncrement() + "\t\t\t\t\tNo error"));
+                Assert.assertTrue(!s.isPresent());
+            });
+        });
     }
 }

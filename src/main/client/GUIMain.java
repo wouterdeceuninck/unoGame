@@ -15,7 +15,7 @@ public class GUIMain extends Application {
 	public static Logger LOGGER = Logger.getLogger("logger");
 	@Override
 	public void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/main/fxmlFiles/Login.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/main/client/fxmlFiles/Login.fxml"));
 
 		stage.setTitle("UNO Login");
 		stage.setScene(new Scene(root, 800, 450));

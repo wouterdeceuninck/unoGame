@@ -2,8 +2,8 @@ package test.intergrationTests;
 
 import main.client.GameInfo;
 import main.client.UserController;
-import main.controller.LobbyController;
-import main.controller.LoginController;
+import main.client.controller.LobbyController;
+import main.client.controller.LoginController;
 import main.dispatcher.Main;
 import main.exceptions.InvalidInputException;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class CreateGameFlow {
     @Test(expected = InvalidInputException.class)
     public void createGame_invalidGameID() throws InvalidInputException, RemoteException {
         LobbyController lobbyController = new LobbyController(new UserController(null));
-        lobbyController.getUserController().setGameInfo(new GameInfo(UUID.randomUUID().toString(), 0, "aValidGameName", 3));
+        lobbyController.getUserController().setGameInfo(new GameInfo("", 0, "aValidGameName", 3));
         lobbyController.createNewGameLogic();
     }
 

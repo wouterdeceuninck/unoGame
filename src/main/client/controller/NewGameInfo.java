@@ -1,4 +1,4 @@
-package main.controller;
+package main.client.controller;
 
 import java.io.Serializable;
 

@@ -26,4 +26,8 @@ public enum CardSymbol {
     public int getScore() {
         return score;
     }
+
+    static CardSymbol[] getNormalSymbols() {
+        return new CardSymbol[]{NINE, EIGHT, SEVEN, SIX, FIVE, FOUR, THREE, TWO, ONE, NULL};
+    }
 }

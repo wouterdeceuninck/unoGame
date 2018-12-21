@@ -1,8 +1,7 @@
-package main.controller;
+package main.client.controller;
 
 import main.client.GameInfo;
 import main.client.UserController;
-import main.interfaces.ServerInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,9 +30,6 @@ public class PopupNewGameController {
 
 	@FXML
 	ChoiceBox<Integer> numberOfPlayersnew = new ChoiceBox<>(numberOfPlayerList);
-
-	@FXML
-	TextField playerAmount;
 
 	@FXML
 	Button btn_start, btn_cancel;

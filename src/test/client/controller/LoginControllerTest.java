@@ -1,11 +1,8 @@
-package test.controller;
+package test.client.controller;
 
-import main.client.UserController;
-import main.controller.LoginController;
+import main.client.controller.LoginController;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class LoginControllerTest {
 

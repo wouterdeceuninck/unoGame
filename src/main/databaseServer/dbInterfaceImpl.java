@@ -29,7 +29,6 @@ public class dbInterfaceImpl extends UnicastRemoteObject implements dbInterface 
 
 	private final int dbPortnumber = 1300;
 	private final int NUMBER_OF_DATABASES = 4;
-	private int ApplicationServerCount;
 
 	public dbInterfaceImpl(String uri, int portnumber) throws SQLException, UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException  {
 		db = new Database(uri);

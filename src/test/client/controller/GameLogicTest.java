@@ -1,8 +1,8 @@
-package test.controller;
+package test.client.controller;
 
 import main.applicationServer.uno.CardColours;
 import main.applicationServer.uno.CardSymbol;
-import main.controller.GameLogic;
+import main.client.controller.GameLogic;
 import main.exceptions.CardNotFoundException;
 import main.applicationServer.uno.Card;
 import org.junit.Assert;

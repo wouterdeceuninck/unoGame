@@ -1,8 +1,8 @@
 package test.intergrationTests;
 
 import main.client.GameInfo;
-import main.controller.LobbyController;
-import main.controller.LoginController;
+import main.client.controller.LobbyController;
+import main.client.controller.LoginController;
 import main.dispatcher.Main;
 import main.exceptions.InvalidInputException;
 import org.junit.Test;
