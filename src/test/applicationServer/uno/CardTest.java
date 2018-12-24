@@ -97,6 +97,7 @@ public class CardTest {
         Card blueDrawCard = new DrawCard(CardColours.BLUE, 2);
         Card blueSkipCard = new SkipCard(CardColours.BLUE, 1);
         Card wildCard = new WildCard();
+        Card wildDrawCard = new WildDrawCard(4);
 
         Assert.assertTrue(wildCard.canPlayOn(blueSix));
         Assert.assertTrue(wildCard.canPlayOn(blueDrawCard));
@@ -108,6 +109,17 @@ public class CardTest {
         Assert.assertTrue(blueDrawCard.canPlayOn(wildCard));
         Assert.assertTrue(blueReverseCard.canPlayOn(wildCard));
         Assert.assertTrue(blueSkipCard.canPlayOn(wildCard));
+
+        Assert.assertTrue(wildDrawCard.canPlayOn(blueSix));
+        Assert.assertTrue(wildDrawCard.canPlayOn(blueDrawCard));
+        Assert.assertTrue(wildDrawCard.canPlayOn(blueReverseCard));
+        Assert.assertTrue(wildDrawCard.canPlayOn(blueSkipCard));
+
+        wildDrawCard.myColour = CardColours.BLUE;
+        Assert.assertTrue(blueSix.canPlayOn(wildDrawCard));
+        Assert.assertTrue(blueDrawCard.canPlayOn(wildDrawCard));
+        Assert.assertTrue(blueReverseCard.canPlayOn(wildDrawCard));
+        Assert.assertTrue(blueSkipCard.canPlayOn(wildDrawCard));
     }
 
     @Test

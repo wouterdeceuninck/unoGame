@@ -70,13 +70,8 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 
 	private void makeConnect() {
 		for (dbInterface iter : databaseServers) {
-			try {
 				iter.setDatabaseServers();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
 		}
-
 	}
 
 	private void connectToDb() {
@@ -89,17 +84,6 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 				e.printStackTrace();
 			}
 		}
-
-		// check connection
-		for (dbInterface databaseInterface : this.databaseServers) {
-			try {
-				System.out.println("check connection!");
-				databaseInterface.ping(1099);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 	private void createServer() {

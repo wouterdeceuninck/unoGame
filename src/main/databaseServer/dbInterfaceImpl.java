@@ -35,7 +35,6 @@ public class dbInterfaceImpl extends UnicastRemoteObject implements dbInterface 
 		db.createUserTable();
 		db.createGameTable();
 		db.createImagesTable();
-		db.createGameToUserTable();
 		databaseServers = new ArrayList<>();
 		this.portnumber = portnumber;
 		System.out.println("----------------------------------------------");
@@ -137,15 +136,13 @@ public class dbInterfaceImpl extends UnicastRemoteObject implements dbInterface 
 	}
 
 	@Override
-	public void setDatabaseServers() throws RemoteException {
+	public void setDatabaseServers() {
 		for (int i = dbPortnumber; i < dbPortnumber + NUMBER_OF_DATABASES; i++) {
 			if (i != this.portnumber) {
 				Registry registry;
 				try {
 					registry = LocateRegistry.getRegistry("localhost", i);
-					dbInterface temp = (dbInterface) registry.lookup("UNOdatabase" + i);
-					this.databaseServers.add(temp);
-
+					this.databaseServers.add((dbInterface) registry.lookup("UNOdatabase" + i));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

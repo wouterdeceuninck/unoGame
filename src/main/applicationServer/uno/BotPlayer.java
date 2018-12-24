@@ -40,17 +40,25 @@ public class BotPlayer implements PlayerInterface {
     @Override
     public void addPile(Card card) {
         this.pile.push(card);
-        botLog.append("Card played: " + card.toString() + "\n");
     }
 
     @Override
     public Card getCard() {
         Card pickedCard = this.cards.stream()
-                .filter(card -> pile.peek().canPlayOn(card))
+                .filter(card -> card.canPlayOn(pile.peek()))
                 .findAny()
                 .orElse(null);
-        botLog.append("Amount of cards left: " + cards.size() + "\n");
-        return pickedCard;
+        return pickedCard == null ? null : setColor(pickedCard);
+    }
+
+    private Card setColor(Card pickedCard) {
+        boolean isBlackCard = pickedCard.mySymbol == CardSymbol.WILDDRAWCARD || pickedCard.mySymbol == CardSymbol.WILDCARD;
+        return isBlackCard ? setColorOfBlackCard(pickedCard) : pickedCard;
+    }
+
+    private Card setColorOfBlackCard(Card card) {
+        card.myColour = CardColours.BLUE;
+        return card;
     }
 
     @Override

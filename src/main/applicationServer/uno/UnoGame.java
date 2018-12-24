@@ -7,7 +7,6 @@ import main.applicationServer.PlayerInterface;
 import main.client.GameInfo;
 import main.exceptions.GamePlayError;
 import main.exceptions.WrongCardOnPileException;
-import main.interfaces.dbInterface;
 
 public class UnoGame {
 	private List<PlayerInterface> players;
@@ -21,6 +20,7 @@ public class UnoGame {
 	private String name;
     private String gameId;
     private String winner;
+    private boolean readyToStart = false;
 
     public int getPlayerCount() {
 		return playerCount;
@@ -100,7 +100,7 @@ public class UnoGame {
 				addCardToPlayer(currentPlayer);
 				return null;
 			}
-			if (!pile.peek().canPlayOn(card)) {
+			if (!card.canPlayOn(pile.peek())) {
 				throw new WrongCardOnPileException("Cannot play " + card.toString() + " on " + pile.peek());
 			}
 
@@ -126,13 +126,13 @@ public class UnoGame {
 	}
 
 	private void playCard(PlayerInterface player, Card card) throws RemoteException {
-		boolean valid = false;
 		player.getCards().remove(
 		        player.getCards().stream()
                     .filter(card1 -> card1.equals(card))
                     .findFirst()
                     .orElseThrow(() -> new NotInPlayersHand("An error occured (a card was played when it was not part of the player's hand)")));
-
+		pile.push(card);
+        updateAllPlayers(player, card);
 	}
 
     private void updateAllPlayers(PlayerInterface player, Card card) {
@@ -142,7 +142,8 @@ public class UnoGame {
         }
     }
 
-    public void play() {
+    public String play() {
+        System.out.println("Game started!");
 		dealCards();
 		players.forEach(this::tellPlayerHandSize);
 
@@ -155,6 +156,7 @@ public class UnoGame {
 		    player.setScore();
 		    player.setPlayerNotReady();
         });
+		return winner;
 	}
 
 	public String getWinner() {
@@ -178,7 +180,7 @@ public class UnoGame {
 	public void addPlayer(PlayerInterface player) {
 		players.add(player);
 		if (players.stream().allMatch(PlayerInterface::isReady) && playerCount == players.size()) {
-			this.play();
+			this.readyToStart = true;
 		}
 	}
 
