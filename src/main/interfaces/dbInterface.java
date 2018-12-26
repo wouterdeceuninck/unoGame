@@ -14,7 +14,7 @@ import main.exceptions.UsernameAlreadyUsedException;
 import main.applicationServer.uno.Card;
 
 public interface dbInterface extends Remote {
-	void setDatabaseServers();
+	void interconnectDBServers();
 
 	boolean checkUsername(String username) throws RemoteException;
 	boolean loginUser(String username, String password)throws RemoteException, UnAutherizedException;

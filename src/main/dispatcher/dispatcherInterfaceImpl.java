@@ -70,7 +70,7 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 
 	private void makeConnect() {
 		for (dbInterface iter : databaseServers) {
-				iter.setDatabaseServers();
+				iter.interconnectDBServers();
 		}
 	}
 
