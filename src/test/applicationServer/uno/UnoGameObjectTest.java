@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class UnoGameTest {
+public class UnoGameObjectTest {
 
     @Test
     public void createGame_deckValidation() {

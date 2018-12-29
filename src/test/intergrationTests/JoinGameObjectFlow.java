@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
-public class JoinGameFlow {
+public class JoinGameObjectFlow {
     private void startDispatcher() {
         new Main().startServer();
     }

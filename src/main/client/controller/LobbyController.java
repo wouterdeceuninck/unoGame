@@ -27,7 +27,7 @@ import main.applicationServer.uno.Player;
 
 public class LobbyController extends UnicastRemoteObject implements lobbyInterface{
 
-    public static final String GAME = "Game";
+    public static final String GAME = "GameObject";
     private ObservableList gameData = FXCollections.observableArrayList();
     private ListView gamesList;
     private UserController userController;
@@ -89,7 +89,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     public void createNewGameLogic() throws RemoteException, InvalidInputException {
         if (userController.getGameInfo().isValid()){
             userController.getServer().startNewGame(userController.getGameInfo());
-        } else throw new InvalidInputException("Game info is not correct!");
+        } else throw new InvalidInputException("GameObject info is not correct!");
     }
 
     @FXML
@@ -180,7 +180,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
             Parent root1 = fxmlLoader.load();
 
             Stage stage = new Stage();
-            stage.setTitle("Create new Game");
+            stage.setTitle("Create new GameObject");
             stage.setScene(new Scene(root1));
             stage.show();
 

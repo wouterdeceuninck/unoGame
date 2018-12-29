@@ -124,7 +124,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     private UnoGame getForId(String gameID) {
         return games.stream().filter(game -> game.getId().equals(gameID))
             .findFirst()
-            .orElseThrow(() -> new GamePlayError("Game not found"))    ;
+            .orElseThrow(() -> new GamePlayError("GameObject not found"))    ;
     }
 
 	@Override

@@ -2,7 +2,7 @@ package test.client;
 
 import org.junit.Test;
 
-public class TestGamePlay {
+public class TestGameObjectPlay {
 
     @Test
     public void startGame() {

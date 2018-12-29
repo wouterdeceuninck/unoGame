@@ -1,4 +1,4 @@
-package main.interfaces;
+package main.databaseServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,7 +16,7 @@ import main.applicationServer.uno.Card;
 public interface dbInterface extends Remote {
 	void interconnectDBServers();
 
-	boolean checkUsername(String username) throws RemoteException;
+	void checkUsername(String username) throws RemoteException, UsernameAlreadyUsedException;
 	boolean loginUser(String username, String password)throws RemoteException, UnAutherizedException;
 
 	List<GameInfo> getActiveGames() throws RemoteException;

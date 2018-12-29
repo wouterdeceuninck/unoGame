@@ -18,7 +18,6 @@ import java.util.List;
 
 import main.exceptions.UnAutherizedException;
 import main.exceptions.UsernameAlreadyUsedException;
-import main.interfaces.dbInterface;
 import main.applicationServer.uno.Card;
 
 public class dbInterfaceImpl extends UnicastRemoteObject {
@@ -34,40 +33,10 @@ public class dbInterfaceImpl extends UnicastRemoteObject {
 		db = new Database(uri);
 		db.createUserTable();
 		db.createGameTable();
-		db.createImagesTable();
 		databaseServers = new ArrayList<>();
 		this.portnumber = portnumber;
 		System.out.println("----------------------------------------------");
 
-	}
-
-	public void addUser(String username, String password) throws UsernameAlreadyUsedException {
-        if (!db.checkUsername(username)) throw new UsernameAlreadyUsedException("The username is already used! Please chose another username!");
-
-//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//		String token = db.createToken(username, timestamp);
-//		db.addUser(username, password, token, timestamp);
-//		for (dbInterface database : databaseServers) {
-//			database.duplicateAddUser(username, password, token, timestamp);
-//		}
-	}
-	
-	public void duplicateAddUser(String username, String password, String token, Timestamp timestamp)
-			throws RemoteException, InvalidKeyException, SignatureException {
-		this.db.addUser(username, password, token, timestamp);
-	}
-
-	public boolean checkUsername(String username) throws RemoteException {
-		return db.checkUsername(username);
-	}
-
-	public boolean loginUser(String username, String password) throws RemoteException, UnAutherizedException{
-        if (!db.checkUsername(username)) throw new UnAutherizedException("Combination of username and password does not exist!");
-        return db.loginUser(username, password);
-	}
-
-	public String getPlayerHand(int user_id) throws RemoteException, SQLException {
-		return db.getPlayerHand(user_id);
 	}
 
 	public void addUsersToGame(String game_name, List<String> users) throws RemoteException {
@@ -148,21 +117,5 @@ public class dbInterfaceImpl extends UnicastRemoteObject {
 
 	public int getPortnumber() throws RemoteException {
 		return this.portnumber;
-	}
-
-	public void duplicateUpdateHandPlayer(String name, List<Card> cards, String dbID) throws RemoteException {
-		db.playTurn(name, cards, dbID);
-	}
-
-	public void duplicateCreatePlayerHand(String id) throws RemoteException {
-		try {
-			db.createPlayerHandTable(id);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}		
-	}
-
-	public String getLoginToken(String username) throws SQLException, RemoteException {
-		return db.getToken(username);
 	}
 }

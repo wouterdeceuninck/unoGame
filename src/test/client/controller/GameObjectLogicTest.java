@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameLogicTest {
+public class GameObjectLogicTest {
     private GameLogic gameLogic = new GameLogic(null);
 
     @Test

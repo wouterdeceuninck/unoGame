@@ -20,7 +20,7 @@ import java.util.Set;
 
 import main.applicationServer.ServerInterfaceImpl;
 import main.databaseServer.dbInterfaceImpl;
-import main.interfaces.dbInterface;
+import main.databaseServer.dbInterface;
 
 import main.interfaces.dispatcherInterface;
 

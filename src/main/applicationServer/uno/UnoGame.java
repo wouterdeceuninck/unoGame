@@ -143,7 +143,7 @@ public class UnoGame {
     }
 
     public String play() {
-        System.out.println("Game started!");
+        System.out.println("GameObject started!");
 		dealCards();
 		players.forEach(this::tellPlayerHandSize);
 
@@ -229,7 +229,7 @@ public class UnoGame {
 	}
 
 	public void endGame() {
-        sendMsg("Someone has left the Game, the game has ended");
+        sendMsg("Someone has left the GameObject, the game has ended");
 	}
 
 	public List<Card> getCardsFromPlayer(String username) throws GamePlayError {

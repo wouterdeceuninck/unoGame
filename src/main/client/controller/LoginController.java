@@ -154,7 +154,7 @@ public class LoginController {
 
 			Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.setTitle("Game Lobby");
+			stage.setTitle("GameObject Lobby");
 			stage.setScene(new Scene(root1));
 			stage.show();
 		} catch (Exception e) {

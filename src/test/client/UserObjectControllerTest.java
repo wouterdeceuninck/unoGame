@@ -12,7 +12,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class UserControllerTest {
+public class UserObjectControllerTest {
 
     ServerInterface serverInterface = mock(ServerInterface.class);
     private String value = null;

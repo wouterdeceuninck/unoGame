@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
-public class CreateGameFlow {
+public class CreateGameObjectFlow {
 
     private void startDispatcher() {
         new Main().startServer();
