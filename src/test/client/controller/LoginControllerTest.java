@@ -1,6 +1,5 @@
-package test.client.controller;
+package client.controller;
 
-import main.client.controller.LoginController;
 import org.junit.Assert;
 import org.junit.Test;
 

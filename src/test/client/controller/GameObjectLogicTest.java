@@ -1,10 +1,9 @@
-package test.client.controller;
+package client.controller;
 
-import main.applicationServer.uno.CardColours;
-import main.applicationServer.uno.CardSymbol;
-import main.client.controller.GameLogic;
-import main.exceptions.CardNotFoundException;
-import main.applicationServer.uno.Card;
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
+import exceptions.CardNotFoundException;
+import applicationServer.uno.cards.Card;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class GameObjectLogicTest {
     @Test
     public void addCardsToGameLogic() {
         gameLogic.addCards(getDummyCards());
-        Card pickedCard = new Card(CardColours.BLUE, CardSymbol.ONE);
+        Card pickedCard = new Card(CardColours.BLUE, CardSymbol.TWO);
         gameLogic.removeCard(pickedCard);
         Assert.assertFalse(gameLogic.getGameData().getCards().contains(pickedCard));
     }

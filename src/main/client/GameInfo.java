@@ -1,18 +1,28 @@
-package main.client;
+package client;
 
 import java.io.Serializable;
 
 public class GameInfo implements Serializable {
-    private final String gameID;
+    private String gameID;
     private final int gameTheme;
     private final String gameName;
     private final int amountOfPlayers;
+    private final int connectedPlayers;
 
-    public GameInfo(String gameID, int gameTheme, String gameName, int amountOfPlayers) {
+    public GameInfo(String gameID, String gameName, int amountOfPlayers, int connectedPlayers, int gameTheme) {
         this.gameID = gameID;
         this.gameTheme = gameTheme;
         this.gameName = gameName;
         this.amountOfPlayers = amountOfPlayers;
+        this.connectedPlayers = connectedPlayers;
+    }
+
+    public int getConnectedPlayers() {
+        return connectedPlayers;
+    }
+
+    public void setGameID(String gameID) {
+        this.gameID = gameID;
     }
 
     public String getGameID() {
@@ -33,5 +43,46 @@ public class GameInfo implements Serializable {
 
     public boolean isValid() {
         return gameName!=null && !gameName.isEmpty() && !gameID.isEmpty() && amountOfPlayers!=0;
+    }
+
+    @Override
+    public String toString() {
+        return this.gameName + "\t" + this.connectedPlayers + "/" + this.amountOfPlayers + "\t" + this.gameTheme;
+    }
+    public static class Builder{
+        private String gameID;
+        private int gameTheme;
+        private String gameName;
+        private int amountOfPlayers;
+        private int connectedPlayers;
+
+        public Builder setConnectedPlayers(int connectedPlayers) {
+            this.connectedPlayers = connectedPlayers;
+            return this;
+        }
+
+        public Builder setGameID(String gameID) {
+            this.gameID = gameID;
+            return this;
+        }
+
+        public Builder setGameTheme(int gameTheme) {
+            this.gameTheme = gameTheme;
+            return this;
+        }
+
+        public Builder setGameName(String gameName) {
+            this.gameName = gameName;
+            return this;
+        }
+
+        public Builder setAmountOfPlayers(int amountOfPlayers) {
+            this.amountOfPlayers = amountOfPlayers;
+            return this;
+        }
+
+        public GameInfo build() {
+            return new GameInfo(this.gameID, this.gameName, this.amountOfPlayers, this.connectedPlayers, this.gameTheme);
+        }
     }
 }

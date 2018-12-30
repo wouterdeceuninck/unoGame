@@ -1,4 +1,4 @@
-package main.dispatcher;
+package dispatcher;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -18,18 +18,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import main.applicationServer.ServerInterfaceImpl;
-import main.databaseServer.dbInterfaceImpl;
-import main.databaseServer.dbInterface;
-
-import main.interfaces.dispatcherInterface;
+import applicationServer.ServerInterfaceImpl;
+//import databaseServer.dbInterfaceImpl;
+import databaseServer.DatabaseImpl;
+import databaseServer.DbInterface;
 
 public class dispatcherInterfaceImpl extends UnicastRemoteObject implements dispatcherInterface {
 
 	private Map<Integer, Integer> serverStatus, dbServerStatus;
 	private Set<Integer> unfilledServers;
 	private Set<Integer> fullServers;
-	private List<dbInterface> databaseServers;
+	private List<DbInterface> databaseServers;
 	private int serverPort;
 
 	// private String uri
@@ -68,8 +67,8 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 
 	}
 
-	private void makeConnect() {
-		for (dbInterface iter : databaseServers) {
+	private void makeConnect() throws RemoteException {
+		for (DbInterface iter : databaseServers) {
 				iter.interconnectDBServers();
 		}
 	}
@@ -78,7 +77,7 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 		for (int i = dbPortnumber; i < dbPortnumber + NUMBER_OF_DATABASES; i++) {
 			try {
 				Registry registry = LocateRegistry.getRegistry("localhost", i);
-				dbInterface tempDB = (dbInterface) registry.lookup("UNOdatabase" + i);
+				DbInterface tempDB = (DbInterface) registry.lookup("UNOdatabase" + i);
 				databaseServers.add(tempDB);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -92,7 +91,7 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 			dbPortnumber = getLeastLoadedDB();
 			System.out.println(dbPortnumber);
 			Registry registry = LocateRegistry.createRegistry(serverPort);
-			registry.bind("UNOserver", new ServerInterfaceImpl(serverPort));
+			registry.bind("UNOserver", new ServerInterfaceImpl(serverPort, dbPortnumber));
 
 			// update class variables
 			unfilledServers.add(serverPort);
@@ -107,25 +106,14 @@ public class dispatcherInterfaceImpl extends UnicastRemoteObject implements disp
 	}
 
 	// give uri => location on disk
-	private void createDbServers(int portnumber) throws SQLException, UnrecoverableKeyException, KeyStoreException,
-			NoSuchAlgorithmException, CertificateException, IOException {
-		for (int i = 0; i < NUMBER_OF_DATABASES; i++) {
-
-			try {
-				Registry registry = LocateRegistry.createRegistry(portnumber + i);
-				dbInterfaceImpl db = new dbInterfaceImpl(uri + (portnumber + i) + ".db", portnumber + i);
-				registry.bind("UNOdatabase" + (portnumber + i), db);
-
-				dbServerStatus.put(portnumber + i, 0);
-				System.out.println("check databaseServersList");
-
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				System.out.println("Remote Exception");
-			} catch (AlreadyBoundException e) {
-				e.printStackTrace();
-				System.out.println("AlreadyBoundException");
-			}
+	private void createDbServers(int portnumber) {
+		Registry registry = null;
+		try {
+			registry = LocateRegistry.createRegistry(portnumber);
+			DbInterface dbInterface = new DatabaseImpl(portnumber);
+			registry.bind("UNOdatabase" + (portnumber), dbInterface);
+		} catch (RemoteException | AlreadyBoundException e) {
+			e.printStackTrace();
 		}
 	}
 

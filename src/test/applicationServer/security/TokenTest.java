@@ -1,7 +1,7 @@
-package test.applicationServer.security;
+package applicationServer.security;
 
-import main.applicationServer.security.JwtFactory;
-import main.applicationServer.security.Token;
+import databaseServer.security.JwtFactory;
+import databaseServer.security.Token;
 import org.junit.Assert;
 import org.junit.Test;
 

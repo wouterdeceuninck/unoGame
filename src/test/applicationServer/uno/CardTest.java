@@ -1,6 +1,8 @@
-package test.applicationServer.uno;
+package applicationServer.uno;
 
-import main.applicationServer.uno.*;
+import applicationServer.uno.cards.*;
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
 import org.junit.Assert;
 import org.junit.Test;
 

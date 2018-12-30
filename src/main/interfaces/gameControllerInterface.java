@@ -1,12 +1,12 @@
-package main.interfaces;
+package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.applicationServer.uno.Card;
-import main.applicationServer.uno.CardColours;
+import applicationServer.uno.cards.Card;
+import applicationServer.uno.cards.properties.CardColours;
 
 public interface gameControllerInterface extends Remote {
 	// main.client.controller methods

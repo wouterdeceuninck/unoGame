@@ -1,7 +1,7 @@
-package main.applicationServer;
+package applicationServer.uno.player;
 
-import main.applicationServer.uno.Card;
-import main.applicationServer.uno.CardColours;
+import applicationServer.uno.cards.Card;
+import applicationServer.uno.cards.properties.CardColours;
 
 import java.util.Deque;
 import java.util.List;

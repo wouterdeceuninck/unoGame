@@ -1,10 +1,10 @@
-package test.intergrationTests;
+package intergrationTests;
 
-import main.client.GameInfo;
-import main.client.controller.LobbyController;
-import main.client.controller.LoginController;
-import main.dispatcher.Main;
-import main.exceptions.InvalidInputException;
+import client.GameInfo;
+import client.controller.LobbyController;
+import client.controller.LoginController;
+import dispatcher.Main;
+import exceptions.InvalidInputException;
 import org.junit.Test;
 
 import java.rmi.RemoteException;
@@ -25,7 +25,12 @@ public class JoinGameObjectFlow {
     @Test
     public void createGame() throws InvalidInputException, RemoteException {
         LobbyController lobbyController = getLobbyController();
-        lobbyController.getUserController().setGameInfo(new GameInfo(UUID.randomUUID().toString(), 1, "MyNewGame", 3));
+        lobbyController.getUserController().setGameInfo(new GameInfo.Builder()
+                .setGameID(UUID.randomUUID().toString())
+                .setGameName("myNewGame")
+                .setAmountOfPlayers(3)
+                .setGameTheme(1)
+                .build());
         lobbyController.createNewGameLogic();
     }
 }

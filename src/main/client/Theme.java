@@ -1,4 +1,4 @@
-package main.client;
+package client;
 
 public enum Theme {
     DEFAULT,

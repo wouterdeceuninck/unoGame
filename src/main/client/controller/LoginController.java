@@ -1,13 +1,13 @@
-package main.client.controller;
+package client.controller;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import main.client.UserController;
-import main.exceptions.InvalidInputException;
-import main.interfaces.dispatcherInterface;
-import main.interfaces.ServerInterface;
+import client.UserController;
+import exceptions.InvalidInputException;
+import dispatcher.dispatcherInterface;
+import applicationServer.ServerInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

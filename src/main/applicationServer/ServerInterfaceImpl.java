@@ -1,104 +1,68 @@
-package main.applicationServer;
+package applicationServer;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import main.applicationServer.security.Token;
-import main.client.GameInfo;
-import main.exceptions.GameNotFoundException;
-import main.exceptions.GamePlayError;
-import main.exceptions.UnAutherizedException;
-import main.exceptions.UsernameAlreadyUsedException;
-import main.interfaces.dispatcherInterface;
-import main.interfaces.gameControllerInterface;
-import main.interfaces.ServerInterface;
-import main.applicationServer.uno.Card;
-import main.applicationServer.uno.Player;
-import main.applicationServer.uno.UnoGame;
+import applicationServer.uno.player.PlayerInterface;
+import client.GameInfo;
+import databaseServer.DbInterface;
+import exceptions.*;
+import dispatcher.dispatcherInterface;
+import interfaces.gameControllerInterface;
+import applicationServer.uno.cards.Card;
+import applicationServer.uno.player.Player;
+import applicationServer.uno.UnoGame;
 
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
-	public static Logger logger = Logger.getLogger(ServerInterfaceImpl.class.getName());
-
 	private List<UnoGame> games;
-	private int serverPortNumber;
 	private List<Player> players;
+	private int serverPortNumber;
+	private DbInterface dbInterface;
 	private dispatcherInterface dispatcher;
 
-	public ServerInterfaceImpl(int serverPortNumber) throws RemoteException {
+	public ServerInterfaceImpl(int serverPortNumber, int dbPortnumber) throws RemoteException {
 		this.games = new ArrayList<>();
 		this.players = new ArrayList<>();
 		this.serverPortNumber = serverPortNumber;
+		setDbInterface(dbPortnumber);
+//		setDispatcherInterface();
 	}
 
 	@Override
 	public String register(String username, String password) throws RemoteException, UsernameAlreadyUsedException {
-        players.add(new Player(username));
-		return getNewToken(username);
+		return dbInterface.registerUser(username, password);
     }
 
     @Override
 	public String login(String username, String password) throws RemoteException, UnAutherizedException {
-//		if (db.loginUser(username, password)) {
-			players.add(new Player(username));
-            return getNewToken(username);
-//        } else {
-//            throw new UnAutherizedException("Combination of username and password does not exist!");
-//        }
+		return dbInterface.loginUser(username, password);
 	}
 
-	private String getNewToken(String username) {
-		return (new Token.Builder()
-                        .setName(username)
-                        .setTimestamp(LocalDateTime.now().toString())
-                        .setAlg("SHA-256")
-                        .build())
-                .toString();
-	}
-
-
-	public List<String> getGames() {
-		return games.stream().map(this::getGameInfo)
-				.collect(Collectors.toList());
-	}
-
-	private String getGameInfo(UnoGame game) {
-		return game.getId()
-				+ "\t" + game.getName()
-				+ "\t" + game.connectedPlayers()
-				+ "/" + game.getPlayerCount();
+	public List<GameInfo> getGames() throws RemoteException {
+		return dbInterface.getActiveGames();
 	}
 
 	@Override
-	public void sendToAllPlayers(String message, String username) {
-		players.forEach(player -> player.sendMessage(message));
+	public String startNewGame(GameInfo gameInfo) throws RemoteException {
+		String game_id = dbInterface.addGame(gameInfo, this.serverPortNumber);
+		gameInfo.setGameID(game_id);
+		games.add(new UnoGame(gameInfo));
+		return game_id;
 	}
 
 	@Override
-	public String startNewGame(GameInfo gameInfo) {
-		UnoGame uno = new UnoGame(gameInfo);
-		games.add(uno);
-		String gameId = serverPortNumber + ":" + games.size();
-		uno.setGameId(gameId);
-		return gameId;
-	}
-
-	@Override
-	public void joinGame(gameControllerInterface gameController, String gameID, String username) throws IllegalStateException {
+	public boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws IllegalStateException {
         try {
-			Player player = findPlayer(username);
-			player.setGameControllerInterface(gameController);
-			getGameByID(gameID).addPlayer(player);
-			players.remove(player);
-		} catch (Exception e) {
+        	dbInterface.addUsersToGame(gameID);
+			getGameByID(gameID).addPlayer(new Player(username, gameController));
+		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+        return true;
 	}
 
 	private UnoGame getGameByID(String gameID) {
@@ -106,10 +70,10 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 				.findFirst().orElseThrow(() -> new GameNotFoundException("There is no game with this ID"));
 	}
 
-	private Player findPlayer(String username) {
-		return players.stream().filter(player -> player.getName().equals(username))
-				.findFirst().orElseThrow(() -> new UnAutherizedException("the user is not known to the server"));
-	}
+//	private Player findPlayer(String username) {
+//		return players.stream().filter(player -> player.getName().equals(username))
+//				.findFirst().orElseThrow(() -> new UnAutherizedException("the user is not known to the server"));
+//	}
 
 	@Override
 	public void sendGameMsg(String msg, String gameID, String username) throws RemoteException {
@@ -140,14 +104,15 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 
 
-	//	public void setdb(int dbPortnumber) {
-//        try {
-//            this.db = (dbInterface) LocateRegistry.getRegistry("localhost", dbPortnumber).lookup("UNOdatabase"+ dbPortnumber);
-//		} catch (RemoteException | NotBoundException e) {
-//			e.printStackTrace();
-//		}
-//    }
-	public void getDispatcher() {
+	public void setDbInterface (int dbPortnumber) {
+        try {
+            this.dbInterface = (DbInterface) LocateRegistry.getRegistry("localhost", dbPortnumber).lookup("UNOdatabase"+ dbPortnumber);
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
+    }
+
+	public void setDispatcherInterface() {
 		try {
 			dispatcher = (dispatcherInterface) LocateRegistry.getRegistry("localhost", 1099).lookup("UNOdispatcher");
 		} catch (RemoteException|NotBoundException e) {

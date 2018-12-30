@@ -1,4 +1,4 @@
-package main.client.controller;
+package client.controller;
 
 
 import java.io.IOException;
@@ -6,12 +6,14 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import exceptions.GameFullException;
 import javafx.scene.control.*;
-import main.client.GameInfo;
-import main.client.UserController;
-import main.exceptions.InvalidInputException;
-import main.interfaces.lobbyInterface;
+import client.GameInfo;
+import client.UserController;
+import exceptions.InvalidInputException;
+import interfaces.lobbyInterface;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import main.applicationServer.uno.Player;
+import applicationServer.uno.player.Player;
 
 public class LobbyController extends UnicastRemoteObject implements lobbyInterface{
 
@@ -103,16 +105,12 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
         Stage stage = (Stage) btn_exit.getScene().getWindow();
         stage.close();
     }
-
-    @FXML
-    public void send() throws RemoteException {
-    	userController.getServer().sendToAllPlayers(chat_input.getText(), this.username);
-        chat_input.setText("");
-    }
     
     @FXML
     public void reload() throws RemoteException {
-        List<String> gameslist = userController.getServer().getGames();
+        List<String> gameslist = userController.getServer().getGames().stream()
+                .map(gameInfo -> gameInfo.toString())
+                .collect(Collectors.toList());
         gameData.clear();
         gameData.addAll(gameslist);
         gamesList.setEditable(false);
@@ -127,7 +125,11 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
  			Parent root1 = (Parent) fxmlLoader.load();
 
             createStage(controller, root1, GAME).show();
-            userController.getServer().joinGame(controller, userController.getGameInfo().getGameID()+ "", username);
+            try {
+                userController.getServer().joinGame(controller, userController.getGameInfo().getGameID()+ "", username);
+            } catch (GameFullException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

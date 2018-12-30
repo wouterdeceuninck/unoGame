@@ -1,4 +1,4 @@
-package main.client.controller;
+package client.controller;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -6,10 +6,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-import main.applicationServer.uno.CardColours;
-import main.client.UserController;
-import main.exceptions.NoCardsFoundExcepion;
-import main.interfaces.gameControllerInterface;
+import applicationServer.uno.cards.properties.CardColours;
+import client.UserController;
+import exceptions.NoCardsFoundExcepion;
+import interfaces.gameControllerInterface;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import main.applicationServer.uno.Card;
+import applicationServer.uno.cards.Card;
 
 public class GameController extends UnicastRemoteObject implements gameControllerInterface {
 

@@ -1,13 +1,14 @@
-package main.applicationServer.uno;
+package applicationServer.uno.player;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import main.applicationServer.PlayerInterface;
-import main.exceptions.PlayerDisconnected;
-import main.interfaces.gameControllerInterface;
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.Card;
+import exceptions.PlayerDisconnected;
+import interfaces.gameControllerInterface;
 
 public class Player implements PlayerInterface {
 	private String name;
@@ -16,9 +17,10 @@ public class Player implements PlayerInterface {
 	private int score;
 	private boolean ready;
 
-	public Player(String name) {
+	public Player(String name, gameControllerInterface gameController) {
 		this.name = name;
 		this.score = 0;
+		this.gameController = gameController;
 		cards = new ArrayList<>();
 	}
 

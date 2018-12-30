@@ -1,8 +1,8 @@
-package test.intergrationTests;
+package intergrationTests;
 
-import main.client.controller.LoginController;
-import main.dispatcher.Main;
-import main.exceptions.InvalidInputException;
+import client.controller.LoginController;
+import dispatcher.Main;
+import exceptions.InvalidInputException;
 import org.junit.Test;
 
 import javax.security.auth.login.FailedLoginException;

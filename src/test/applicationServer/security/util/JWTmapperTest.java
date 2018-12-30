@@ -1,6 +1,6 @@
-package test.applicationServer.security.util;
+package applicationServer.security.util;
 
-import main.applicationServer.security.util.JWTmapper;
+import databaseServer.security.util.JWTmapper;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;

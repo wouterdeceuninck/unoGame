@@ -1,20 +1,21 @@
-package main.interfaces;
+package applicationServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import main.client.GameInfo;
-import main.exceptions.UsernameAlreadyUsedException;
-import main.applicationServer.uno.Card;
+import applicationServer.uno.cards.Card;
+import client.GameInfo;
+import exceptions.GameFullException;
+import exceptions.UsernameAlreadyUsedException;
+import interfaces.gameControllerInterface;
 
-public interface ServerInterface extends Remote, AuthenticationInterface {
+public interface ServerInterface extends Remote {
 
     String startNewGame(GameInfo gameInfo) throws RemoteException;
-	void joinGame(gameControllerInterface gameController, String gameID, String username) throws RemoteException;
+	boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws RemoteException;
 
-	List<String> getGames() throws RemoteException;
-	void sendToAllPlayers(String s, String username) throws RemoteException;
+	List<GameInfo> getGames() throws RemoteException;
 	void sendGameMsg(String msg, String gameID, String username) throws RemoteException;
 	List<Card> getCards(String username, String gameID) throws RemoteException;
 	void openLobby(gameControllerInterface gci) throws RemoteException;

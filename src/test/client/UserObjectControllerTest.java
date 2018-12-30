@@ -1,7 +1,6 @@
-package test.client;
+package client;
 
-import main.client.UserController;
-import main.interfaces.ServerInterface;
+import applicationServer.ServerInterface;
 import org.junit.Assert;
 import org.junit.Test;
 

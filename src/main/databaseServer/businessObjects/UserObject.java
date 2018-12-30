@@ -1,4 +1,4 @@
-package main.databaseServer.businessObjects;
+package databaseServer.businessObjects;
 
 public class UserObject {
     private final String username;
@@ -11,21 +11,36 @@ public class UserObject {
         this.token = token;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
     public static class Builder {
         private String username;
         private String password;
         private String token;
 
-        public void setUsername(String username) {
+        public Builder setUsername(String username) {
             this.username = username;
+            return this;
         }
 
-        public void setPassword(String password) {
+        public Builder setPassword(String password) {
             this.password = password;
+            return this;
         }
 
-        public void setToken(String token) {
+        public Builder setToken(String token) {
             this.token = token;
+            return this;
         }
 
         public UserObject buildUser() {

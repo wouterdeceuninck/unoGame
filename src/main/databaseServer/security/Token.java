@@ -1,6 +1,6 @@
-package main.databaseServer.security;
+package databaseServer.security;
 
-import main.databaseServer.security.util.JWTmapper;
+import databaseServer.security.util.JWTmapper;
 
 import java.security.InvalidKeyException;
 import java.security.SignatureException;

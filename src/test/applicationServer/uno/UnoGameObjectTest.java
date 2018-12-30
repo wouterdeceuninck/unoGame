@@ -1,7 +1,10 @@
-package test.applicationServer.uno;
+package applicationServer.uno;
 
-import main.applicationServer.uno.*;
-import main.client.GameInfo;
+import applicationServer.uno.cards.Card;
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
+import applicationServer.uno.player.BotPlayer;
+import client.GameInfo;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +14,12 @@ public class UnoGameObjectTest {
 
     @Test
     public void createGame_deckValidation() {
-        UnoGame unoGame = new UnoGame(new GameInfo(UUID.randomUUID().toString(), 1, "GameName", 2));
+        UnoGame unoGame = new UnoGame(new GameInfo.Builder()
+                .setGameID(UUID.randomUUID().toString())
+                .setGameName("myNewGame")
+                .setAmountOfPlayers(2)
+                .setGameTheme(1)
+                .build());
         Assert.assertTrue(unoGame.getDeck().stream().filter(card -> card.myColour == CardColours.BLUE && card.mySymbol== CardSymbol.ONE).count() == 2L);
         Assert.assertTrue(unoGame.getDeck().stream().filter(card -> card.myColour == CardColours.GREEN && card.mySymbol == CardSymbol.REVERSECARD).count() == 2L);
     }
@@ -83,7 +91,12 @@ public class UnoGameObjectTest {
 
     private UnoGame createNewBotGame(int amountOfPlayers) {
         String gameID = UUID.randomUUID().toString();
-        UnoGame unoGame = new UnoGame(new GameInfo(gameID, 1, "GameName" + gameID, amountOfPlayers));
+        UnoGame unoGame = new UnoGame(new GameInfo.Builder()
+                .setGameID(gameID)
+                .setGameName("myNewGame" + gameID)
+                .setAmountOfPlayers(amountOfPlayers)
+                .setGameTheme(0)
+                .build());
 
         for (int iter = 1; iter <= amountOfPlayers; iter++) {
             unoGame.addPlayer(new BotPlayer("bot" + iter));

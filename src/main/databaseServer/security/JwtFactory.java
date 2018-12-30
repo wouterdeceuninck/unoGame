@@ -1,6 +1,6 @@
-package main.databaseServer.security;
+package databaseServer.security;
 
-import main.databaseServer.security.util.SecretValue;
+import databaseServer.security.util.SecretValue;
 
 import java.io.FileInputStream;
 import java.io.IOException;

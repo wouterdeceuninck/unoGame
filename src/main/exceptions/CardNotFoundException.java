@@ -1,4 +1,4 @@
-package main.exceptions;
+package exceptions;
 
 public class CardNotFoundException extends RuntimeException {
     public CardNotFoundException(String msg) {

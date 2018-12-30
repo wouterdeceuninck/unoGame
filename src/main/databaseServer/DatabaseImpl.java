@@ -1,22 +1,30 @@
-package main.databaseServer;
+package databaseServer;
 
-import main.client.GameInfo;
-import main.databaseServer.tables.UserTable;
-import main.exceptions.UnAutherizedException;
-import main.exceptions.UsernameAlreadyUsedException;
+import client.GameInfo;
+import databaseServer.mapper.InfoToObjectMapper;
+import databaseServer.mapper.ObjectToInfoMapper;
+import databaseServer.tables.GameTable;
+import databaseServer.tables.UserTable;
+import exceptions.GameFullException;
+import exceptions.UnAutherizedException;
+import exceptions.UsernameAlreadyUsedException;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class DatabaseImpl implements  dbInterface {
-    static final String URI = "";
+public class DatabaseImpl extends UnicastRemoteObject implements DbInterface {
+    private static final String URI = "src\\main\\resources\\database";
     private final int portnumber;
     private final UserTable userTable;
+    private final GameTable gameTable;
 
-    public DatabaseImpl (int portnumber) {
+    public DatabaseImpl (int portnumber) throws RemoteException {
         this.portnumber = portnumber;
-        this.userTable = new UserTable(URI);
+        this.userTable = new UserTable(URI + portnumber + ".db");
+        this.gameTable = new GameTable(URI + portnumber + ".db");
     }
 
     @Override
@@ -25,52 +33,59 @@ public class DatabaseImpl implements  dbInterface {
     }
 
     @Override
-    public void checkUsername(String username) throws UsernameAlreadyUsedException {
-        userTable.checkUsername(username);
-    }
-
-    @Override
-    public boolean loginUser(String username, String password) throws UnAutherizedException {
+    public String loginUser(String username, String password) throws UnAutherizedException {
         return userTable.loginUser(username, password);
     }
 
     @Override
     public List<GameInfo> getActiveGames(){
-        return null;
+        return gameTable.getActiveGames().stream()
+                .map(gameObject -> ObjectToInfoMapper.mapToInfo(gameObject))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void setInactive(String game_id){
+        gameTable.setInactive(game_id);
+    }
+
+    @Override
+    public String registerUser(String username, String password) throws UsernameAlreadyUsedException{
+        return userTable.addUser(username, password);
+    }
+
+    @Override
+    public void duplicateAddUser(String username, String password, String token, Timestamp timestamp){
 
     }
 
     @Override
-    public void addUser(String username, String password) throws UsernameAlreadyUsedException {
-        userTable.addUser(username, password);
+    public String addGame(GameInfo gameInfo, int serverport){
+        return gameTable.addGame(InfoToObjectMapper.mapToObject(gameInfo, serverport));
     }
 
     @Override
-    public void duplicateAddUser(String username, String password, String token, Timestamp timestamp) throws RemoteException {
-
-    }
-
-    @Override
-    public String addGame(String id, String name, int aantalSpelers, int serverport, int theme) throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public void duplicateAddGame(String id, String name, int aantalSpelers, int serverport, int theme) throws RemoteException {
+    public void duplicateAddGame(GameInfo gameInfo, int serverport){
 
     }
 
     @Override
-    public void addUsersToGame(String game_name, List<String> users) throws RemoteException {
+    public void addUsersToGame(String game_id) {
+        gameTable.addUserToGame(game_id);
+    }
+
+    @Override
+    public void removeUsersFromGame(String game_id){
+        gameTable.removeUserFromGame(game_id);
+    }
+
+    @Override
+    public void duplicateAddUsersToGame(String game_id){
 
     }
 
     @Override
-    public void duplicateAddUsersToGame(String game_id, List<String> users) throws RemoteException {
+    public void duplicateremoveUsersFromGame(String game_id){
 
     }
 }

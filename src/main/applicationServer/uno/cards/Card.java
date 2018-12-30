@@ -1,7 +1,9 @@
-package main.applicationServer.uno;
+package applicationServer.uno.cards;
 
 import java.io.Serializable;
 
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
 import javafx.scene.image.Image;
 
 public class Card implements Serializable {

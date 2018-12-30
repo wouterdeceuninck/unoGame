@@ -1,6 +1,8 @@
-package main.applicationServer.uno;
+package applicationServer.uno.player;
 
-import main.applicationServer.PlayerInterface;
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
+import applicationServer.uno.cards.Card;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
-package main.client;
+package client;
 
-import main.exceptions.CardIsNotPresentException;
-import main.applicationServer.uno.Card;
+import exceptions.CardIsNotPresentException;
+import applicationServer.uno.cards.Card;
 
 import java.util.ArrayList;
 import java.util.List;

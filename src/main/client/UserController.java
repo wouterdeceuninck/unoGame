@@ -1,7 +1,7 @@
-package main.client;
+package client;
 
-import main.exceptions.UsernameAlreadyUsedException;
-import main.interfaces.ServerInterface;
+import exceptions.UsernameAlreadyUsedException;
+import applicationServer.ServerInterface;
 
 import javax.security.auth.login.FailedLoginException;
 import java.rmi.RemoteException;

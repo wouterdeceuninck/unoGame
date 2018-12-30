@@ -1,10 +1,10 @@
-package main.databaseServer.tables;
+package databaseServer.tables;
 
-import io.jsonwebtoken.JwtBuilder;
-import main.databaseServer.businessObjects.UserObject;
-import main.databaseServer.security.JwtFactory;
-import main.databaseServer.security.Token;
-import main.exceptions.UsernameAlreadyUsedException;
+import databaseServer.businessObjects.UserObject;
+import databaseServer.security.PasswordVerifier;
+import databaseServer.security.Token;
+import exceptions.UnAutherizedException;
+import exceptions.UsernameAlreadyUsedException;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -22,9 +22,7 @@ public class UserTable {
     }
 
     private void createUserTable() {
-            String sql = "CREATE TABLE IF NOT EXISTS Users (\n"
-                    + "	username    VARCHAR     PRIMARY KEY,\n" + "	password    VARCHAR     NOT NULL, \n"
-                    + " token       VARCHAR     NOT NULL" + ");";
+            String sql = getCreateTableStatement();
             executeStatement(sql);
     }
 
@@ -36,49 +34,73 @@ public class UserTable {
         }
     }
 
-    public void checkUsername(String username) {
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(getCheckUsernameStatement());
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                throw new UsernameAlreadyUsedException("This username is already used!");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+    private void checkUsername(String username) throws UsernameAlreadyUsedException{
+        if (getUser(username) != null) {
+            throw new UsernameAlreadyUsedException("This username is already used!");
         }
     }
 
-    private String getCheckUsernameStatement() {
-        return "SELECT username FROM USERS WHERE USERNAME = ?";
+    UserObject getUser(String username) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getSelectUserStatement())) {
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) return null;
+            return new UserObject.Builder()
+                    .setUsername(resultSet.getString("username"))
+                    .setPassword(resultSet.getString("password"))
+                    .setToken(resultSet.getString("token"))
+                    .buildUser();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public boolean loginUser(String username, String password) {
-        return false;
+    public String loginUser(String username, String password) throws UnAutherizedException {
+        UserObject user = getUser(username);
+        if (user != null) {
+            if (!PasswordVerifier.verifyPassword(password, user)) throw new UnAutherizedException("The username or password given are not correct");
+        } else throw new UnAutherizedException("The username or password given are not correct");
+        return createToken(username);
     }
 
-    public String addUser(String username, String password) {
+    public String addUser(String username, String password) throws UsernameAlreadyUsedException{
         checkUsername(username);
-        String sql = "INSERT INTO Users(username,password,token) VALUES(?,?,?)";
-        String token = new Token.Builder()
-                .setAlg("SHA-256")
-                .setName(username)
-                .setTimestamp(LocalDateTime.now().toString())
-                .build()
-                .toString();
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.setString(3, token);
-            pstmt.executeUpdate();
+        String token = createToken(username);
+        String hashedPassword = PasswordVerifier.createPassword(password);
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getInsertUserStatement())) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, hashedPassword);
+            preparedStatement.setString(3, token);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return token;
     }
 
-    public UserObject getUser(String pindakaas) {
-        return null;
+    private String createToken(String username) {
+        return new Token.Builder()
+                    .setAlg("SHA-256")
+                    .setName(username)
+                    .setTimestamp(LocalDateTime.now().toString())
+                    .build()
+                    .toString();
+    }
+
+    private String getCreateTableStatement() {
+        return "CREATE TABLE IF NOT EXISTS Users (\n"
+                + "	username    VARCHAR     PRIMARY KEY,\n" + "	password    VARCHAR     NOT NULL, \n"
+                + " token       VARCHAR     NOT NULL" + ");";
+    }
+
+    private String getSelectUserStatement() {
+        return "SELECT * FROM USERS WHERE USERNAME = ?";
+    }
+
+    private String getInsertUserStatement() {
+        return "INSERT INTO Users(username,password,token) VALUES(?,?,?)";
     }
 }

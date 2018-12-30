@@ -1,4 +1,4 @@
-package main.applicationServer.uno;
+package applicationServer.uno.cards.properties;
 
 public enum CardColours {
     YELLOW("yellow"),
@@ -13,7 +13,7 @@ public enum CardColours {
         this.colour = colour;
     }
 
-    static CardColours[] getColours() {
+    public static CardColours[] getColours() {
         return new CardColours[]{YELLOW, BLUE, RED, GREEN};
     }
 }

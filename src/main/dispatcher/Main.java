@@ -1,4 +1,4 @@
-package main.dispatcher;
+package dispatcher;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

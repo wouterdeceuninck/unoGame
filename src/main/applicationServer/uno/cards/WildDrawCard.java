@@ -1,7 +1,10 @@
-package main.applicationServer.uno;
+package applicationServer.uno.cards;
+
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
+import applicationServer.uno.UnoGame;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class WildDrawCard extends Card implements Serializable {

@@ -1,4 +1,4 @@
-package main.databaseServer.security.util;
+package databaseServer.security.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;

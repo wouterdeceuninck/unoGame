@@ -1,4 +1,4 @@
-package main.client.controller;
+package client.controller;
 
 public enum OpponentGUISide {
     NORD(100, 180),

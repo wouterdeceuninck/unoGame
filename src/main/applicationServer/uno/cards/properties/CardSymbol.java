@@ -1,4 +1,4 @@
-package main.applicationServer.uno;
+package applicationServer.uno.cards.properties;
 
 public enum CardSymbol {
     WILDCARD(50),
@@ -27,7 +27,7 @@ public enum CardSymbol {
         return score;
     }
 
-    static CardSymbol[] getNormalSymbols() {
+    public static CardSymbol[] getNormalSymbols() {
         return new CardSymbol[]{NINE, EIGHT, SEVEN, SIX, FIVE, FOUR, THREE, TWO, ONE, NULL};
     }
 }

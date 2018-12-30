@@ -1,12 +1,15 @@
-package main.applicationServer.uno;
+package applicationServer.uno;
 
 import java.rmi.RemoteException;
 import java.util.*;
 
-import main.applicationServer.PlayerInterface;
-import main.client.GameInfo;
-import main.exceptions.GamePlayError;
-import main.exceptions.WrongCardOnPileException;
+import applicationServer.uno.cards.properties.CardColours;
+import applicationServer.uno.cards.properties.CardSymbol;
+import applicationServer.uno.player.PlayerInterface;
+import applicationServer.uno.cards.*;
+import client.GameInfo;
+import exceptions.GamePlayError;
+import exceptions.WrongCardOnPileException;
 
 public class UnoGame {
 	private List<PlayerInterface> players;
@@ -34,6 +37,7 @@ public class UnoGame {
 		this.name = gameInfo.getGameName();
 		this.players = new ArrayList<>();
 		this.playerCount = gameInfo.getAmountOfPlayers();
+		this.gameId = gameInfo.getGameID();
 
 		deck = new ArrayList<>();
 		pile = new ArrayDeque<>();

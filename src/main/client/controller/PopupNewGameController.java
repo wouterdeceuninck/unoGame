@@ -1,7 +1,7 @@
-package main.client.controller;
+package client.controller;
 
-import main.client.GameInfo;
-import main.client.UserController;
+import client.GameInfo;
+import client.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -42,7 +42,12 @@ public class PopupNewGameController {
 
 	@FXML
 	public void startGame(final String gameId, final int gameTheme, final String gameName, final int amountOfPlayers) throws RemoteException {
-		userController.setGameInfo(new GameInfo(gameId, gameTheme, gameName, amountOfPlayers));
+		userController.setGameInfo(
+				new GameInfo.Builder()
+					.setGameName(gameName)
+					.setAmountOfPlayers(amountOfPlayers)
+					.setGameTheme(gameTheme)
+					.build());
 	    userController.getServer().startNewGame(userController.getGameInfo());
 		closeWindow();
 	}

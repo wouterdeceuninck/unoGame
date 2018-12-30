@@ -1,10 +1,10 @@
-package main.client.controller;
+package client.controller;
 
-import main.client.GameData;
-import main.client.GameInfo;
-import main.client.UserController;
-import main.exceptions.CardNotFoundException;
-import main.applicationServer.uno.Card;
+import client.GameData;
+import client.GameInfo;
+import client.UserController;
+import exceptions.CardNotFoundException;
+import applicationServer.uno.cards.Card;
 
 import java.rmi.RemoteException;
 import java.util.List;
