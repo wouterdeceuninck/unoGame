@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class JoinGameObjectFlow {
     private void startDispatcher() {
-        new Main().startServer();
+        new Main().startServer(10);
     }
 
     private LobbyController getLobbyController() throws InvalidInputException, RemoteException {

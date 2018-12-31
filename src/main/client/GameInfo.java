@@ -8,6 +8,7 @@ public class GameInfo implements Serializable {
     private final String gameName;
     private final int amountOfPlayers;
     private final int connectedPlayers;
+    private int serverPortnumber;
 
     public GameInfo(String gameID, String gameName, int amountOfPlayers, int connectedPlayers, int gameTheme) {
         this.gameID = gameID;
@@ -27,6 +28,14 @@ public class GameInfo implements Serializable {
 
     public String getGameID() {
         return gameID;
+    }
+
+    public int getServerPortnumber() {
+        return serverPortnumber;
+    }
+
+    public void setServerPortnumber(int serverPortnumber) {
+        this.serverPortnumber = serverPortnumber;
     }
 
     public int getGameTheme() {

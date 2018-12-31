@@ -1,22 +1,24 @@
-package dispatcher;
+package  dispatcher;
+
+import dispatcher.DispatcherInterface;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Main {
 
-	public void startServer() {
+	public void startServer(int amountOfApplicationServers) {
 		try {
 			Registry registry = LocateRegistry.createRegistry(1099);
-			dispatcherInterfaceImpl d = new dispatcherInterfaceImpl();
-			registry.rebind("UNOdispatcher", d);
+			DispatcherInterface dispatcherInterface = new DispatcherInterfaceImpl(amountOfApplicationServers);
+			registry.rebind("UNOdispatcher", dispatcherInterface);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void main(String[] args) {
-		new Main().startServer();
+		new Main().startServer(10);
 	}
 
 }

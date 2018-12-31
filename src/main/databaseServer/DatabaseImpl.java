@@ -5,7 +5,6 @@ import databaseServer.mapper.InfoToObjectMapper;
 import databaseServer.mapper.ObjectToInfoMapper;
 import databaseServer.tables.GameTable;
 import databaseServer.tables.UserTable;
-import exceptions.GameFullException;
 import exceptions.UnAutherizedException;
 import exceptions.UsernameAlreadyUsedException;
 
@@ -15,7 +14,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DatabaseImpl extends UnicastRemoteObject implements DbInterface {
+public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.DbInterface {
     private static final String URI = "src\\main\\resources\\database";
     private final int portnumber;
     private final UserTable userTable;
@@ -70,8 +69,8 @@ public class DatabaseImpl extends UnicastRemoteObject implements DbInterface {
     }
 
     @Override
-    public void addUsersToGame(String game_id) {
-        gameTable.addUserToGame(game_id);
+    public boolean addUsersToGame(String game_id) {
+        return gameTable.addUserToGame(game_id);
     }
 
     @Override
@@ -87,5 +86,10 @@ public class DatabaseImpl extends UnicastRemoteObject implements DbInterface {
     @Override
     public void duplicateremoveUsersFromGame(String game_id){
 
+    }
+
+    @Override
+    public Integer getAmountOfServerConnections() {
+        return null;
     }
 }

@@ -34,6 +34,7 @@ public class UnoGame {
 	}
 
 	public UnoGame(GameInfo gameInfo) {
+    	this.gameId = gameInfo.getGameID();
 		this.name = gameInfo.getGameName();
 		this.players = new ArrayList<>();
 		this.playerCount = gameInfo.getAmountOfPlayers();
@@ -147,7 +148,6 @@ public class UnoGame {
     }
 
     public String play() {
-        System.out.println("GameObject started!");
 		dealCards();
 		players.forEach(this::tellPlayerHandSize);
 
@@ -247,7 +247,7 @@ public class UnoGame {
 				.getCards();
 	}
 
-	private void startGame() {
+	public void startGame() {
         new Thread(this::play).start();
 	}
 
@@ -259,11 +259,11 @@ public class UnoGame {
         return this.players.size();
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
+	public boolean readyToStart() {
+		return this.readyToStart;
+	}
 
-    private class NotInPlayersHand extends RuntimeException {
+	private class NotInPlayersHand extends RuntimeException {
         public NotInPlayersHand(String message) {
             super(message);
         }

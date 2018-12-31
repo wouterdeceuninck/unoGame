@@ -6,7 +6,7 @@ import java.rmi.registry.LocateRegistry;
 
 import client.UserController;
 import exceptions.InvalidInputException;
-import dispatcher.dispatcherInterface;
+import dispatcher.DispatcherInterface;
 import applicationServer.ServerInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -78,8 +78,8 @@ public class LoginController {
 
 	private void connectToServer() throws RemoteException, NotBoundException {
 		server = (ServerInterface) LocateRegistry.getRegistry("localhost", (
-				(dispatcherInterface) LocateRegistry.getRegistry("localhost", DISPATCHER_PORT)
-					.lookup("UNOdispatcher")).getPort())
+				(DispatcherInterface) LocateRegistry.getRegistry("localhost", DISPATCHER_PORT)
+					.lookup("UNOdispatcher")).getLeastLoadedApplicationServer())
 				.lookup("UNOserver");
 		userController = new UserController(server);
 	}

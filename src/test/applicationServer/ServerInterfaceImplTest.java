@@ -5,6 +5,8 @@ import databaseServer.DatabaseImpl;
 import databaseServer.DbInterface;
 import exceptions.GameFullException;
 import exceptions.UsernameAlreadyUsedException;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.rmi.AlreadyBoundException;
@@ -15,49 +17,41 @@ import java.util.UUID;
 
 public class ServerInterfaceImplTest {
 
+    private Registry registry;
+    private DbInterface dbInterface;
+    private int DBPORTNUMBER = 1300;
+
+    @Before
+    public void init() {
+        createDbServers(1300);
+    }
     @Test(expected = UsernameAlreadyUsedException.class)
     public void registerTest_expectToken() throws RemoteException {
-        int dbPortnumber = 1300;
-        createDbServers(dbPortnumber);
-        ServerInterface serverInterface = new ServerInterfaceImpl(1200, dbPortnumber);
+        createDbServers(DBPORTNUMBER);
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
         String token = serverInterface.register("PindaKaas", "aPassword");
         System.out.println(token);
     }
 
     @Test
     public void loginTest_expectToken() throws RemoteException {
-        int dbPortnumber = 1300;
-        createDbServers(dbPortnumber);
-        ServerInterface serverInterface = new ServerInterfaceImpl(1200, dbPortnumber);
+        DbInterface dbInterface = createDbServers(DBPORTNUMBER);
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
         String token = serverInterface.login("PindaKaas", "aPassword");
-        System.out.println(token);
+        Assert.assertTrue(token != null && !token.isEmpty());
     }
 
     @Test
     public void addGame_expectID() throws RemoteException {
-        int dbPortnumber = 1300;
-        createDbServers(dbPortnumber);
-        ServerInterface serverInterface = new ServerInterfaceImpl(1200, dbPortnumber);
-        String game_id = serverInterface.startNewGame(new GameInfo.Builder()
-                .setGameID(UUID.randomUUID().toString())
-                .setGameName("myNewGame")
-                .setAmountOfPlayers(2)
-                .setGameTheme(1)
-                .build());
-        System.out.println(game_id);
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
+        String game_id = serverInterface.startNewGame(createNewGame());
+        Assert.assertTrue(game_id != null && !game_id.isEmpty());
     }
 
     @Test
     public void joinGame_expectNoError() throws RemoteException, GameFullException {
-        int dbPortnumber = 1300;
-        createDbServers(dbPortnumber);
-        ServerInterface serverInterface = new ServerInterfaceImpl(1200, dbPortnumber);
-        String game_id = serverInterface.startNewGame(new GameInfo.Builder()
-                .setGameID(UUID.randomUUID().toString())
-                .setGameName("myNewGame")
-                .setAmountOfPlayers(2)
-                .setGameTheme(1)
-                .build());
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
+        String game_id = serverInterface.startNewGame(createNewGame());
         System.out.println(game_id);
 
         serverInterface.joinGame(null, game_id, "username");
@@ -66,15 +60,8 @@ public class ServerInterfaceImplTest {
 
     @Test(expected = GameFullException.class)
     public void joinGame_expectGameFullError() throws RemoteException, GameFullException {
-        int dbPortnumber = 1300;
-        createDbServers(dbPortnumber);
-        ServerInterface serverInterface = new ServerInterfaceImpl(1200, dbPortnumber);
-        String game_id = serverInterface.startNewGame(new GameInfo.Builder()
-                .setGameID(UUID.randomUUID().toString())
-                .setGameName("myNewGame")
-                .setAmountOfPlayers(2)
-                .setGameTheme(1)
-                .build());
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
+        String game_id = serverInterface.startNewGame(createNewGame());
         System.out.println(game_id);
 
         serverInterface.joinGame(null, game_id, "username");
@@ -82,14 +69,43 @@ public class ServerInterfaceImplTest {
         boolean bool = serverInterface.joinGame(null, game_id, "username");
     }
 
-    private void createDbServers(int portnumber) {
-        Registry registry = null;
+    @Test
+    public void createGame_playWithBots() throws RemoteException {
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
+        String game_id = serverInterface.startNewGame(createNewGame());
+        serverInterface.joinGameAddBot(game_id);
+        serverInterface.joinGameAddBot(game_id);
+    }
+
+    @Test
+    public void createGame_playWithBots_checkIfInactive() throws RemoteException {
+        ServerInterface serverInterface = new ServerInterfaceImpl(1200, DBPORTNUMBER);
+        String game_id = serverInterface.startNewGame(createNewGame());
+        serverInterface.joinGameAddBot(game_id);
+        serverInterface.joinGameAddBot(game_id);
+        Assert.assertFalse(serverInterface.getGames().stream()
+                .anyMatch(gameInfo -> gameInfo.getGameID() == game_id));
+    }
+
+    private DbInterface createDbServers(int portnumber) {
+        registry = null;
+        dbInterface = null;
         try {
             registry = LocateRegistry.createRegistry(portnumber);
-            DbInterface dbInterface = new DatabaseImpl(portnumber);
+            dbInterface = new DatabaseImpl(portnumber);
             registry.bind("UNOdatabase" + (portnumber), dbInterface);
         } catch (RemoteException | AlreadyBoundException e) {
             e.printStackTrace();
         }
+        return dbInterface;
+    }
+
+    private GameInfo createNewGame() {
+        return new GameInfo.Builder()
+                .setGameID(UUID.randomUUID().toString())
+                .setGameName("myNewGame")
+                .setAmountOfPlayers(2)
+                .setGameTheme(1)
+                .build();
     }
 }

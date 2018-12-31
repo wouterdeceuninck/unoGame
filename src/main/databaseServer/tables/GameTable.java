@@ -72,14 +72,15 @@ public class GameTable {
         }
     }
 
-    public void addUserToGame(String game_id) {
-        if (isGameFull(game_id)) throw new GameFullException("The game you selected is already full!");
+    public boolean addUserToGame(String game_id) {
+        if (isGameFull(game_id)) return false;
         try (PreparedStatement preparedStatement = connection.prepareStatement(getAddUserToGameStatement())) {
             preparedStatement.setString(1, game_id);
-            if (preparedStatement.executeUpdate() != 1) throw new RuntimeException();
+            if (preparedStatement.executeUpdate() != 1) throw new RuntimeException("An error occured adding a user to a game!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public void removeUserFromGame(String game_id) {

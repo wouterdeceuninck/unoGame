@@ -50,7 +50,14 @@ public class BotPlayer implements PlayerInterface {
                 .filter(card -> card.canPlayOn(pile.peek()))
                 .findAny()
                 .orElse(null);
-        return pickedCard == null ? null : setColor(pickedCard);
+        Card card = pickedCard == null ? null : setColor(pickedCard);
+        System.out.println(getLogMessage(card));
+        return card;
+    }
+
+    private String getLogMessage(Card card) {
+        return card == null ? this.name + "picks a card!" : this.name + ": played the card " + card.toString() + "\n"
+                + "\tAnd has " + this.cards.size() + " cards left!";
     }
 
     private Card setColor(Card pickedCard) {

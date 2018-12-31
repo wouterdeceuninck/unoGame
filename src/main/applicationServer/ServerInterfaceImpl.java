@@ -7,11 +7,12 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import applicationServer.uno.player.BotPlayer;
 import applicationServer.uno.player.PlayerInterface;
 import client.GameInfo;
 import databaseServer.DbInterface;
 import exceptions.*;
-import dispatcher.dispatcherInterface;
+import dispatcher.DispatcherInterface;
 import interfaces.gameControllerInterface;
 import applicationServer.uno.cards.Card;
 import applicationServer.uno.player.Player;
@@ -22,14 +23,15 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	private List<Player> players;
 	private int serverPortNumber;
 	private DbInterface dbInterface;
-	private dispatcherInterface dispatcher;
+	private DispatcherInterface dispatcher;
+	private final int MAXSERVERLOAD = 20;
 
 	public ServerInterfaceImpl(int serverPortNumber, int dbPortnumber) throws RemoteException {
 		this.games = new ArrayList<>();
 		this.players = new ArrayList<>();
 		this.serverPortNumber = serverPortNumber;
 		setDbInterface(dbPortnumber);
-//		setDispatcherInterface();
+		setDispatcherInterface();
 	}
 
 	@Override
@@ -48,32 +50,56 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 	@Override
 	public String startNewGame(GameInfo gameInfo) throws RemoteException {
+		if(!serverFull()) return String.valueOf(dispatcher.getLeastLoadedApplicationServer());
 		String game_id = dbInterface.addGame(gameInfo, this.serverPortNumber);
 		gameInfo.setGameID(game_id);
 		games.add(new UnoGame(gameInfo));
 		return game_id;
 	}
 
+	private boolean serverFull() {
+		return games.size() >= MAXSERVERLOAD;
+	}
+
 	@Override
 	public boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws IllegalStateException {
         try {
-        	dbInterface.addUsersToGame(gameID);
-			getGameByID(gameID).addPlayer(new Player(username, gameController));
+			PlayerInterface player = new Player(username, gameController);
+			if (!dbInterface.addUsersToGame(gameID)) throw new GameFullException("The game is already full!");
+			UnoGame unoGame = getGameByID(gameID);
+			unoGame.addPlayer(player);
+			startWhenReady(gameID, unoGame);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
         return true;
 	}
 
+	@Override
+	public boolean joinGameAddBot(String gameID){
+		try {
+			if (!dbInterface.addUsersToGame(gameID)) throw new GameFullException("The game is already full!");
+			UnoGame unoGame = getGameByID(gameID);
+			unoGame.addPlayer(new BotPlayer("BotPlayer" + unoGame.connectedPlayers()));
+			startWhenReady(gameID, unoGame);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
+		return true;
+	}
+
+	private void startWhenReady(String gameID, UnoGame unoGame) throws RemoteException {
+		if(unoGame.readyToStart()) {
+			dbInterface.setInactive(gameID);
+			unoGame.startGame();
+		}
+	}
+
 	private UnoGame getGameByID(String gameID) {
 		return games.stream().filter(game -> game.getId().equals(gameID))
 				.findFirst().orElseThrow(() -> new GameNotFoundException("There is no game with this ID"));
 	}
-
-//	private Player findPlayer(String username) {
-//		return players.stream().filter(player -> player.getName().equals(username))
-//				.findFirst().orElseThrow(() -> new UnAutherizedException("the user is not known to the server"));
-//	}
 
 	@Override
 	public void sendGameMsg(String msg, String gameID, String username) throws RemoteException {
@@ -102,8 +128,6 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 		}
 	}
 
-
-
 	public void setDbInterface (int dbPortnumber) {
         try {
             this.dbInterface = (DbInterface) LocateRegistry.getRegistry("localhost", dbPortnumber).lookup("UNOdatabase"+ dbPortnumber);
@@ -114,7 +138,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 	public void setDispatcherInterface() {
 		try {
-			dispatcher = (dispatcherInterface) LocateRegistry.getRegistry("localhost", 1099).lookup("UNOdispatcher");
+			dispatcher = (DispatcherInterface) LocateRegistry.getRegistry("localhost", 1099).lookup("UNOdispatcher");
 		} catch (RemoteException|NotBoundException e) {
 			e.printStackTrace();
 		}

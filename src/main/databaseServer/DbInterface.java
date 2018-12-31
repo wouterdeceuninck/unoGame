@@ -24,10 +24,11 @@ public interface DbInterface extends Remote {
 	String addGame(GameInfo gameInfo, int serverport)throws RemoteException;
 	void duplicateAddGame(GameInfo gameInfo, int serverport)throws RemoteException;
 
-	void addUsersToGame(String game_id) throws RemoteException;
+	boolean addUsersToGame(String game_id) throws RemoteException;
 	void removeUsersFromGame(String game_id)throws RemoteException;
 
 	void duplicateAddUsersToGame(String game_id)throws RemoteException;
 	void duplicateremoveUsersFromGame(String game_id)throws RemoteException;
 
+	Integer getAmountOfServerConnections()throws RemoteException;
 }
