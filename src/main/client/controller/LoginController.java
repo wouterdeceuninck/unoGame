@@ -77,10 +77,9 @@ public class LoginController {
 	}
 
 	private void connectToServer() throws RemoteException, NotBoundException {
-		server = (ServerInterface) LocateRegistry.getRegistry("localhost", (
-				(DispatcherInterface) LocateRegistry.getRegistry("localhost", DISPATCHER_PORT)
-					.lookup("UNOdispatcher")).getLeastLoadedApplicationServer())
-				.lookup("UNOserver");
+		DispatcherInterface dispatcherInterface = (DispatcherInterface) LocateRegistry.getRegistry("localhost", DISPATCHER_PORT)
+				.lookup("UNOdispatcher");
+		server = dispatcherInterface.getLeastLoadedApplicationServer();
 		userController = new UserController(server);
 	}
 

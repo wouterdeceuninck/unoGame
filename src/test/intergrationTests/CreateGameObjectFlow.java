@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CreateGameObjectFlow {
 
     private void startDispatcher() {
-        new Main().startServer(10);
+        new Main().startServer();
     }
 
     private LobbyController getLobbyController() throws InvalidInputException, RemoteException {

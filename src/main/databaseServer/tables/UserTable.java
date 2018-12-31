@@ -40,7 +40,7 @@ public class UserTable {
         }
     }
 
-    UserObject getUser(String username) {
+    public UserObject getUser(String username) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(getSelectUserStatement())) {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -64,12 +64,16 @@ public class UserTable {
         return createToken(username);
     }
 
-    public String addUser(String username, String password) throws UsernameAlreadyUsedException{
+    public String addUser(String username, String hashedAndSalt) throws UsernameAlreadyUsedException{
         checkUsername(username);
 
         String token = createToken(username);
-        String hashedPassword = PasswordVerifier.createPassword(password);
 
+        insertUser(username, hashedAndSalt, token);
+        return token;
+    }
+
+    private void insertUser(String username, String hashedPassword, String token) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(getInsertUserStatement())) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, hashedPassword);
@@ -78,7 +82,6 @@ public class UserTable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return token;
     }
 
     private String createToken(String username) {
@@ -102,5 +105,13 @@ public class UserTable {
 
     private String getInsertUserStatement() {
         return "INSERT INTO Users(username,password,token) VALUES(?,?,?)";
+    }
+
+    public void duplicateAddUser(String username, String password, String token) {
+        insertUser(username, password, token);
+    }
+
+    public void duplicateLoginUser(String username, String token) {
+
     }
 }

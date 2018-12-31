@@ -17,6 +17,7 @@ import interfaces.gameControllerInterface;
 import applicationServer.uno.cards.Card;
 import applicationServer.uno.player.Player;
 import applicationServer.uno.UnoGame;
+import org.sqlite.util.StringUtils;
 
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 	private List<UnoGame> games;
@@ -44,17 +45,24 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 		return dbInterface.loginUser(username, password);
 	}
 
+	@Override
+	public int getAmountOfGameOnServer() throws RemoteException {
+		return games.size();
+	}
+
 	public List<GameInfo> getGames() throws RemoteException {
 		return dbInterface.getActiveGames();
 	}
 
 	@Override
 	public String startNewGame(GameInfo gameInfo) throws RemoteException {
-		if(!serverFull()) return String.valueOf(dispatcher.getLeastLoadedApplicationServer());
+		if(serverFull()) {
+			return dispatcher.getLeastLoadedApplicationServer().startNewGame(gameInfo);
+		}
 		String game_id = dbInterface.addGame(gameInfo, this.serverPortNumber);
 		gameInfo.setGameID(game_id);
 		games.add(new UnoGame(gameInfo));
-		return game_id;
+		return this.serverPortNumber + "_" + game_id;
 	}
 
 	private boolean serverFull() {
@@ -63,12 +71,18 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 	@Override
 	public boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws IllegalStateException {
-        try {
+		String[] serverPortAndID = gameID.split("_");
+		int serverpot = Integer.parseInt(serverPortAndID[0]);
+		String game_id = serverPortAndID[1];
+
+		if (this.serverPortNumber != serverpot) throw new RerouteNeededExeption(serverpot);
+
+		try {
 			PlayerInterface player = new Player(username, gameController);
-			if (!dbInterface.addUsersToGame(gameID)) throw new GameFullException("The game is already full!");
-			UnoGame unoGame = getGameByID(gameID);
+			if (!dbInterface.addUsersToGame(game_id)) throw new GameFullException("The game is already full!");
+			UnoGame unoGame = getGameByID(game_id);
 			unoGame.addPlayer(player);
-			startWhenReady(gameID, unoGame);
+			startWhenReady(game_id, unoGame);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

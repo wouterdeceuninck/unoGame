@@ -23,4 +23,6 @@ public interface ServerInterface extends Remote {
 
     String register(String username, String password) throws RemoteException, UsernameAlreadyUsedException;
     String login(String username, String password) throws RemoteException, UnAutherizedException;
+
+    int getAmountOfGameOnServer() throws RemoteException;
 }

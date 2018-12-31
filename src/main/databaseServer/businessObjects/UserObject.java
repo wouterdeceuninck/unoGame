@@ -23,6 +23,9 @@ public class UserObject {
         return token;
     }
 
+    public String toString() {
+        return username + "_" + password + "_" + token;
+    }
     public static class Builder {
         private String username;
         private String password;

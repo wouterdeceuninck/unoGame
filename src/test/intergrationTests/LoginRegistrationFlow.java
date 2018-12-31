@@ -10,7 +10,7 @@ import javax.security.auth.login.FailedLoginException;
 public class LoginRegistrationFlow {
 
     private void startDispatcher() {
-        new Main().startServer(10);
+        new Main().startServer();
     }
 
     @Test(expected = InvalidInputException.class)

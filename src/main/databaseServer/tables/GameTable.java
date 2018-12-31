@@ -1,7 +1,6 @@
 package databaseServer.tables;
 
 import databaseServer.businessObjects.GameObject;
-import exceptions.GameFullException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +22,11 @@ public class GameTable {
     public String addGame(GameObject gameObject){
         String ID = UUID.randomUUID().toString();
         while (!checkID(ID)) ID = UUID.randomUUID().toString();
+        insertNewGame(gameObject, ID);
+        return ID;
+    }
 
+    private void insertNewGame(GameObject gameObject, String ID) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(getInsertGameStatement())) {
             preparedStatement.setString(1, ID);
             preparedStatement.setString(2, gameObject.getName());
@@ -35,7 +38,6 @@ public class GameTable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return ID;
     }
 
     public GameObject getGame(String ID) {
@@ -162,5 +164,9 @@ public class GameTable {
 
     private String getRemoveUserFromGameStatement() {
         return "UPDATE Game SET connected_players = connected_players - 1 WHERE game_id = ?";
+    }
+
+    public void duplicateAddGame(GameObject gameObject, String game_id) {
+        insertNewGame(gameObject, game_id);
     }
 }
