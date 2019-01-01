@@ -4,6 +4,7 @@ import databaseServer.businessObjects.UserObject;
 import databaseServer.security.PasswordVerifier;
 import databaseServer.security.Token;
 import exceptions.UnAutherizedException;
+import exceptions.UserNotFoundException;
 import exceptions.UsernameAlreadyUsedException;
 
 import java.sql.*;
@@ -34,13 +35,13 @@ public class UserTable {
         }
     }
 
-    private void checkUsername(String username) throws UsernameAlreadyUsedException{
+    private void checkUsername(String username) throws UsernameAlreadyUsedException {
         if (getUser(username) != null) {
             throw new UsernameAlreadyUsedException("This username is already used!");
         }
     }
 
-    public UserObject getUser(String username) {
+    public UserObject getUser(String username){
         try (PreparedStatement preparedStatement = connection.prepareStatement(getSelectUserStatement())) {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -56,19 +57,29 @@ public class UserTable {
         return null;
     }
 
-    public String loginUser(String username, String password) throws UnAutherizedException {
+    public String loginUser(String username, String password) throws UnAutherizedException, UserNotFoundException {
         UserObject user = getUser(username);
+        String token = createToken(username);
         if (user != null) {
             if (!PasswordVerifier.verifyPassword(password, user)) throw new UnAutherizedException("The username or password given are not correct");
-        } else throw new UnAutherizedException("The username or password given are not correct");
-        return createToken(username);
+            updateUser(username, token);
+        } else throw new UserNotFoundException("The username or password given are not correct");
+        return token;
+    }
+
+    private void updateUser(String username, String token){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getUpdateUserStatement())) {
+            preparedStatement.setString(1, token);
+            preparedStatement.setString(2, username);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public String addUser(String username, String hashedAndSalt) throws UsernameAlreadyUsedException{
         checkUsername(username);
-
         String token = createToken(username);
-
         insertUser(username, hashedAndSalt, token);
         return token;
     }
@@ -82,6 +93,14 @@ public class UserTable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void duplicateAddUser(String username, String password, String token) {
+        insertUser(username, password, token);
+    }
+
+    public void duplicateLoginUser(String username, String token) {
+        updateUser(username, token);
     }
 
     private String createToken(String username) {
@@ -107,11 +126,7 @@ public class UserTable {
         return "INSERT INTO Users(username,password,token) VALUES(?,?,?)";
     }
 
-    public void duplicateAddUser(String username, String password, String token) {
-        insertUser(username, password, token);
-    }
-
-    public void duplicateLoginUser(String username, String token) {
-
+    public String getUpdateUserStatement() {
+        return "UPDATE USERS SET token = ? WHERE USERNAME = ?";
     }
 }

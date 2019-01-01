@@ -72,10 +72,10 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	@Override
 	public boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws IllegalStateException {
 		String[] serverPortAndID = gameID.split("_");
-		int serverpot = Integer.parseInt(serverPortAndID[0]);
+		int serverport = Integer.parseInt(serverPortAndID[0]);
 		String game_id = serverPortAndID[1];
 
-		if (this.serverPortNumber != serverpot) throw new RerouteNeededExeption(serverpot);
+		if (this.serverPortNumber != serverport) throw new RerouteNeededExeption(serverport);
 
 		try {
 			PlayerInterface player = new Player(username, gameController);

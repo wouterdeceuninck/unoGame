@@ -65,7 +65,7 @@ public class DispatcherInterfaceImpl extends UnicastRemoteObject implements Disp
 
 	// give uri => location on disk
 	private int createDbServer(int portnumber) {
-		Registry registry = null;
+		Registry registry;
 		try {
 			registry = LocateRegistry.createRegistry(portnumber);
 			DbInterface dbInterface = new DatabaseImpl(portnumber);

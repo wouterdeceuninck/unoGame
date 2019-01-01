@@ -8,6 +8,7 @@ import databaseServer.security.PasswordVerifier;
 import databaseServer.tables.GameTable;
 import databaseServer.tables.UserTable;
 import exceptions.UnAutherizedException;
+import exceptions.UserNotFoundException;
 import exceptions.UsernameAlreadyUsedException;
 
 import java.rmi.RemoteException;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.DbInterface {
-    private static final String URI = "src\\main\\resources\\database";
+    private static final String URI = "resources\\database";
     private final int portnumber;
     private final UserTable userTable;
     private final GameTable gameTable;
@@ -32,9 +33,25 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
 
     @Override
     public String loginUser(String username, String password) throws UnAutherizedException {
-        String token = userTable.loginUser(username, password);
+        String token = null;
+        try {
+            token = userTable.loginUser(username, password);
+        } catch (UserNotFoundException e) {
+            searchForUserOnOtherDBServers(username, password);
+        }
         if (token != null) replicateLoginUser(username, token);
         return token;
+    }
+
+    private void searchForUserOnOtherDBServers(String username, String password) {
+        replicateDb.stream().map(dbInterface -> {
+            try {
+                return dbInterface.loginUser(username, password);
+            } catch (RemoteException e1) {
+                e1.printStackTrace();
+            }
+            return null;
+        });
     }
 
     @Override
@@ -68,9 +85,9 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
 
     @Override
     public boolean addUsersToGame(String game_id) {
-        boolean b = gameTable.addUserToGame(game_id);
-        if (b) replicateAddUserToGame(game_id);
-        return b;
+        boolean gameFound = gameTable.addUserToGame(game_id);
+        if (gameFound) replicateAddUserToGame(game_id);
+        return gameFound;
     }
 
     @Override

@@ -56,7 +56,7 @@ public class GameInfo implements Serializable {
 
     @Override
     public String toString() {
-        return this.gameName + "\t" + this.connectedPlayers + "/" + this.amountOfPlayers + "\t" + this.gameTheme;
+        return this.getGameID() + "\t" + this.gameName + "\t" + this.connectedPlayers + "/" + this.amountOfPlayers + "\t" + this.gameTheme;
     }
     public static class Builder{
         private String gameID;
