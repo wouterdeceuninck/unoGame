@@ -12,6 +12,8 @@ public class Main {
 			Registry registry = LocateRegistry.createRegistry(1099);
 			DispatcherInterface dispatcherInterface = new DispatcherInterfaceImpl();
 			registry.rebind("UNOdispatcher", dispatcherInterface);
+			dispatcherInterface.createDBServer();
+			dispatcherInterface.createApplicationServer();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

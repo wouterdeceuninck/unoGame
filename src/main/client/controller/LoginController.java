@@ -147,7 +147,7 @@ public class LoginController {
 
 	private void startLobby() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/Lobby.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Lobby.fxml"));
 			fxmlLoader.setController(new LobbyController(userController));
 			Parent root1 = fxmlLoader.load();
 

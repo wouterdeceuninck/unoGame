@@ -41,18 +41,22 @@ public class PopupNewGameController {
 	}
 
 	@FXML
-	public void startGame(final String gameId, final int gameTheme, final String gameName, final int amountOfPlayers) throws RemoteException {
-		userController.setGameInfo(
-				new GameInfo.Builder()
-					.setGameName(gameName)
-					.setAmountOfPlayers(amountOfPlayers)
-					.setGameTheme(gameTheme)
-					.build());
+	public void startGame() throws RemoteException {
+		createGameInfo();
 	    userController.getServer().startNewGame(userController.getGameInfo());
 		closeWindow();
 	}
 
-    private String getGameName(String gameName) {
+	private void createGameInfo() {
+		userController.setGameInfo(
+				new GameInfo.Builder()
+					.setGameName(name.getText())
+					.setAmountOfPlayers(numberOfPlayersnew.getValue())
+					.setGameTheme(themePicker.getValue())
+					.build());
+	}
+
+	private String getGameName(String gameName) {
 		if (gameName.equals("")) {
 			gameName = userController.getUserInfo().getUsername() + "'s game";
 		}

@@ -1,6 +1,7 @@
 package client;
 
 import applicationServer.ServerInterface;
+import exceptions.FailedToLoginException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class UserObjectControllerTest {
         Assert.assertEquals(userController.getUserInfo().getToken(), value);
     }
 
-    @Test(expected = UserController.FailedToLoginException.class)
+    @Test(expected = FailedToLoginException.class)
     public void Login_serverReturnsNullThrowsException() throws RemoteException {
         when(serverInterface.login(anyString(), anyString())).thenReturn(value);
         UserController userController = new UserController(serverInterface);
@@ -41,7 +42,7 @@ public class UserObjectControllerTest {
         Assert.assertEquals(userController.getUserInfo().getToken(), value);
     }
 
-    @Test(expected = UserController.FailedToLoginException.class)
+    @Test(expected = FailedToLoginException.class)
     public void Register_serverReturnsNullThrowsException() throws RemoteException, FailedLoginException {
         when(serverInterface.register(anyString(), anyString())).thenReturn(value);
         UserController userController = new UserController(serverInterface);

@@ -4,6 +4,7 @@ import applicationServer.ServerInterface;
 import client.GameInfo;
 import databaseServer.DbInterface;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.rmi.NotBoundException;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 public class ReplicationTest {
 
+    @Ignore
     @Test
     public void createDbServers_replicateRegister() throws RemoteException, InterruptedException {
         new Main().startServer();
@@ -49,7 +51,7 @@ public class ReplicationTest {
         DbInterface dbInterface2 = connectToDbServer(dbServer1);
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
-        for (int i = 0; i< 1000; i++) {
+        for (int i = 0; i< 100; i++) {
             testLogin(dbInterface1, dbInterface2, serverInterface);
         }
     }
@@ -70,16 +72,17 @@ public class ReplicationTest {
         allApplicationServers.add(connectToApplicationServer(dispatcherInterface.createApplicationServer()));
         allApplicationServers.add(connectToApplicationServer(dispatcherInterface.createApplicationServer()));
 
-        allApplicationServers.get(0).register("PindaKaas", "aPassword");
+        String username = UUID.randomUUID().toString();
+        allApplicationServers.get(0).register(username, "aPassword");
         for (int i = 0; i< 10; i++) {
             for (ServerInterface applicationServer : allApplicationServers) {
                 applicationServer.login("PindaKaas", "aPassword");
-                Thread.sleep(10);
+                Thread.sleep(100);
 
-                String pindaKaas1 = dbInterface1.getUser_forTestsOnly("PindaKaas");
-                String pindaKaas2 = dbInterface2.getUser_forTestsOnly("PindaKaas");
-                String pindaKaas3 = dbInterface3.getUser_forTestsOnly("PindaKaas");
-                String pindaKaas4 = dbInterface4.getUser_forTestsOnly("PindaKaas");
+                String pindaKaas1 = dbInterface1.getUser_forTestsOnly(username);
+                String pindaKaas2 = dbInterface2.getUser_forTestsOnly(username);
+                String pindaKaas3 = dbInterface3.getUser_forTestsOnly(username);
+                String pindaKaas4 = dbInterface4.getUser_forTestsOnly(username);
 
                 System.out.println(pindaKaas1);
                 System.out.println(pindaKaas2);
@@ -105,23 +108,22 @@ public class ReplicationTest {
         int dbServer = dispatcherInterface.createDBServer();
         int dbServer1 = dispatcherInterface.createDBServer();
 
-        System.out.println(dbServer);
-        System.out.println(dbServer1);
-
         DbInterface dbInterface1 = connectToDbServer(dbServer);
         DbInterface dbInterface2 = connectToDbServer(dbServer1);
+
+        List<GameInfo> activeGames1 = dbInterface1.getActiveGames();
+        List<GameInfo> activeGames2 = dbInterface2.getActiveGames();
+        int differenceBefore = activeGames1.size() - activeGames2.size();
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
         serverInterface.startNewGame(this.createNewGame());
         Thread.sleep(100);
 
-        List<GameInfo> activeGames1 = dbInterface1.getActiveGames();
-        List<GameInfo> activeGames2 = dbInterface2.getActiveGames();
+        activeGames1 = dbInterface1.getActiveGames();
+        activeGames2 = dbInterface2.getActiveGames();
+        int differenceAfter = activeGames1.size() - activeGames2.size();
 
-        System.out.println(activeGames1.size());
-        System.out.println(activeGames2.size());
-
-        Assert.assertEquals(activeGames1.size(), activeGames2.size());
+        Assert.assertEquals(differenceBefore, differenceAfter);
     }
 
     @Test
@@ -172,25 +174,72 @@ public class ReplicationTest {
         serverInterface.joinGame(null, portnumberAndGameId, "myUsername");
         Thread.sleep(100);
 
-        List<GameInfo> activeGames1 = dbInterface1.getActiveGames();
-        List<GameInfo> activeGames2 = dbInterface2.getActiveGames();
-
-        int connectedPlayers1 = activeGames1.stream()
-                .filter(gameInfo -> gameInfo.getGameID().equals(gameID))
-                .findFirst()
-                .get()
-                .getConnectedPlayers();
-
-        int connectedPlayers2 = activeGames2.stream()
-                .filter(gameInfo -> gameInfo.getGameID().equals(gameID))
-                .findFirst()
-                .get()
-                .getConnectedPlayers();
-
-        System.out.println(connectedPlayers1);
-        System.out.println(connectedPlayers2);
+        int connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
+        int connectedPlayers2 = getConnectedPlayers(gameID, dbInterface2.getActiveGames());
 
         Assert.assertEquals(connectedPlayers1, connectedPlayers2);
+    }
+
+    @Test
+    public void createDBServers_replicateRemoveUser() throws RemoteException, InterruptedException {
+        new Main().startServer();
+        DispatcherInterface dispatcherInterface = connectToDispatcher();
+
+        DbInterface dbInterface1 = connectToDbServer(dispatcherInterface.createDBServer());
+        DbInterface dbInterface2 = connectToDbServer(dispatcherInterface.createDBServer());
+
+        ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
+        String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame());
+
+        String gameID = portnumberAndGameId.split("_")[1];
+
+        serverInterface.joinGame(null, portnumberAndGameId, "myUsername");
+        Thread.sleep(100);
+        int connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
+        int connectedPlayers2 = getConnectedPlayers(gameID, dbInterface2.getActiveGames());
+
+        Assert.assertEquals(connectedPlayers1, connectedPlayers2);
+
+        serverInterface.leaveGame("myUsername", portnumberAndGameId);
+        Thread.sleep(100);
+        connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
+        connectedPlayers2 = getConnectedPlayers(gameID, dbInterface2.getActiveGames());
+
+        Assert.assertEquals(connectedPlayers1, connectedPlayers2);
+    }
+
+    @Ignore
+    @Test
+    public void createDBServers_replicateSetInactive() throws RemoteException, InterruptedException {
+        new Main().startServer();
+        DispatcherInterface dispatcherInterface = connectToDispatcher();
+
+        DbInterface dbInterface1 = connectToDbServer(dispatcherInterface.createDBServer());
+        DbInterface dbInterface2 = connectToDbServer(dispatcherInterface.createDBServer());
+
+        int size1 = dbInterface1.getActiveGames().size();
+        int size2 = dbInterface2.getActiveGames().size();
+
+        ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
+        String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame());
+
+        serverInterface.joinGame(null, portnumberAndGameId, "myUsername");
+        serverInterface.joinGame(null, portnumberAndGameId, "myOtherUsername");
+        Thread.sleep(100);
+
+        int size1After = dbInterface1.getActiveGames().size();
+        int size2After = dbInterface2.getActiveGames().size();
+
+        Assert.assertEquals(size1After, size1);
+        Assert.assertEquals(size2After, size2);
+    }
+
+    private int getConnectedPlayers(String gameID, List<GameInfo> activeGames) {
+        return activeGames.stream()
+                .filter(gameInfo -> gameInfo.getGameID().equals(gameID))
+                .findFirst()
+                .get()
+                .getConnectedPlayers();
     }
 
     private void testLogin(DbInterface dbInterface1, DbInterface dbInterface2, ServerInterface serverInterface) throws RemoteException, InterruptedException {

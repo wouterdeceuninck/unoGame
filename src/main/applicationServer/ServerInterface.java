@@ -15,6 +15,7 @@ public interface ServerInterface extends Remote {
     String startNewGame(GameInfo gameInfo) throws RemoteException;
 	boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws RemoteException;
 	boolean joinGameAddBot(String gameID) throws RemoteException;
+	boolean leaveGame(String username, String gameID)throws RemoteException;
 
 	List<GameInfo> getGames() throws RemoteException;
 	void sendGameMsg(String msg, String gameID, String username) throws RemoteException;

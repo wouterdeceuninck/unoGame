@@ -10,6 +10,7 @@ import applicationServer.uno.cards.*;
 import client.GameInfo;
 import exceptions.GamePlayError;
 import exceptions.WrongCardOnPileException;
+import sun.audio.AudioPlayer;
 
 public class UnoGame {
 	private List<PlayerInterface> players;
@@ -183,7 +184,7 @@ public class UnoGame {
 
 	public void addPlayer(PlayerInterface player) {
 		players.add(player);
-		if (players.stream().allMatch(PlayerInterface::isReady) && playerCount == players.size()) {
+		if (playerCount == players.size()) {
 			this.readyToStart = true;
 		}
 	}
@@ -263,7 +264,15 @@ public class UnoGame {
 		return this.readyToStart;
 	}
 
-	private class NotInPlayersHand extends RuntimeException {
+	public void removePlayer(String username) {
+		players.remove(players.stream()
+				.filter(playerInterface -> playerInterface.getName().equals(username))
+				.findAny()
+				.get())
+		;
+	}
+
+    private class NotInPlayersHand extends RuntimeException {
         public NotInPlayersHand(String message) {
             super(message);
         }

@@ -63,12 +63,22 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
         gamesList.getSelectionModel().selectedItemProperty().addListener(
                 (ChangeListener<String>) (observable, oldValue, newValue) -> {
                     List<String> temp = Arrays.asList(newValue.split("\t"));
-                    setCurrentGame(this.userController.getGameInfo());
+                    setCurrentGame(buildGameInfo(temp));
                 });
         setList();
-        chat.setEditable(false);
         lbl_username.setText(username);
         this.gamesList = new ListView(gameData);
+    }
+
+    private GameInfo buildGameInfo(List<String> temp) {
+        String[] amountOfPlayers = temp.get(2).split("/");
+        return new GameInfo.Builder()
+                .setGameID(temp.get(0))
+                .setGameName(temp.get(1))
+                .setConnectedPlayers(Integer.parseInt(amountOfPlayers[0]))
+                .setAmountOfPlayers(Integer.parseInt(amountOfPlayers[1]))
+                .setGameTheme(Integer.parseInt(temp.get(3)))
+                .build();
     }
 
     private void setCurrentGame(GameInfo gameInfo) {
@@ -119,7 +129,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 
     public void startGame() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/Game.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Game.fxml"));
             GameController controller = new GameController(userController);
             fxmlLoader.setController(controller);
  			Parent root1 = (Parent) fxmlLoader.load();
@@ -176,7 +186,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 	
 	public void startPopupNewGame(){
 		try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/PopupNewGame.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/PopupNewGame.fxml"));
             fxmlLoader.setController(new PopupNewGameController(this.userController));
 
             Parent root1 = fxmlLoader.load();

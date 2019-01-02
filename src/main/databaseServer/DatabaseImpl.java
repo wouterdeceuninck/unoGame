@@ -118,12 +118,12 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
 
     @Override
     public void duplicateAddUsersToGame(String game_id){
-        new Thread(() -> gameTable.addUserToGame(game_id));
+        new Thread(() -> gameTable.addUserToGame(game_id)).start();
     }
 
     @Override
     public void duplicateRemoveUsersFromGame(String game_id){
-        new Thread(() -> gameTable.removeUserFromGame(game_id));
+        new Thread(() -> gameTable.removeUserFromGame(game_id)).start();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
     }
 
     private void replicateAddUserToGame(String game_id) {
-        this.replicateDb.stream().forEach(dbInterface -> {
+        this.replicateDb.forEach(dbInterface -> {
             try {
                 dbInterface.duplicateAddUsersToGame(game_id);
             } catch (RemoteException e) {

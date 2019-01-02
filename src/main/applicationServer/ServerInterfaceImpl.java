@@ -19,6 +19,8 @@ import applicationServer.uno.player.Player;
 import applicationServer.uno.UnoGame;
 import org.sqlite.util.StringUtils;
 
+import static sun.audio.AudioPlayer.player;
+
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 	private List<UnoGame> games;
 	private List<Player> players;
@@ -51,7 +53,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	public List<GameInfo> getGames() throws RemoteException {
-		return dbInterface.getActiveGames();
+		List<GameInfo> activeGames = dbInterface.getActiveGames();
+		activeGames.forEach(gameInfo -> gameInfo.setGameID(gameInfo.getServerPortnumber() + "_" + gameInfo.getGameID()));
+		return activeGames;
 	}
 
 	@Override
@@ -90,12 +94,33 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean joinGameAddBot(String gameID){
+	public boolean leaveGame(String username, String gameID) {
+		String[] serverPortAndID = gameID.split("_");
+		int serverport = Integer.parseInt(serverPortAndID[0]);
+		String game_id = serverPortAndID[1];
+
 		try {
-			if (!dbInterface.addUsersToGame(gameID)) throw new GameFullException("The game is already full!");
-			UnoGame unoGame = getGameByID(gameID);
+			dbInterface.removeUsersFromGame(game_id);
+
+			UnoGame unoGame = getGameByID(game_id);
+			if (unoGame == null) return false;
+			unoGame.removePlayer(username);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	@Override
+	public boolean joinGameAddBot(String gameID){
+		String[] serverPortAndID = gameID.split("_");
+		int serverport = Integer.parseInt(serverPortAndID[0]);
+		String game_id = serverPortAndID[1];
+		try {
+			if (!dbInterface.addUsersToGame(game_id)) throw new GameFullException("The game is already full!");
+			UnoGame unoGame = getGameByID(game_id);
 			unoGame.addPlayer(new BotPlayer("BotPlayer" + unoGame.connectedPlayers()));
-			startWhenReady(gameID, unoGame);
+			startWhenReady(game_id, unoGame);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -117,7 +142,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 	@Override
 	public void sendGameMsg(String msg, String gameID, String username) throws RemoteException {
-		getGameByID(gameID).sendMsg(username + ": " + msg);
+		String[] serverPortAndID = gameID.split("_");
+		String game_id = serverPortAndID[1];
+		getGameByID(game_id).sendMsg(username + ": " + msg);
 	}
 
     @Override

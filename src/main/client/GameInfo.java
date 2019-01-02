@@ -18,6 +18,15 @@ public class GameInfo implements Serializable {
         this.connectedPlayers = connectedPlayers;
     }
 
+    public GameInfo(String gameID, String gameName, int amountOfPlayers, int connectedPlayers, int gameTheme, int serverPortnumber) {
+        this.gameID = gameID;
+        this.gameTheme = gameTheme;
+        this.gameName = gameName;
+        this.amountOfPlayers = amountOfPlayers;
+        this.connectedPlayers = connectedPlayers;
+        this.serverPortnumber = serverPortnumber;
+    }
+
     public int getConnectedPlayers() {
         return connectedPlayers;
     }
@@ -64,6 +73,7 @@ public class GameInfo implements Serializable {
         private String gameName;
         private int amountOfPlayers;
         private int connectedPlayers;
+        private int portnumber;
 
         public Builder setConnectedPlayers(int connectedPlayers) {
             this.connectedPlayers = connectedPlayers;
@@ -90,8 +100,13 @@ public class GameInfo implements Serializable {
             return this;
         }
 
+        public Builder setPortnumber(int portnumber) {
+            this.portnumber = portnumber;
+            return this;
+        }
+
         public GameInfo build() {
-            return new GameInfo(this.gameID, this.gameName, this.amountOfPlayers, this.connectedPlayers, this.gameTheme);
+            return new GameInfo(this.gameID, this.gameName, this.amountOfPlayers, this.connectedPlayers, this.gameTheme, this.portnumber);
         }
     }
 }
