@@ -57,8 +57,10 @@ public class Card implements Serializable {
         Card card = (Card) object;
         boolean sameSymbol = card.mySymbol == this.mySymbol;
         boolean sameColor= card.myColour == this.myColour;
+		boolean isWildCard = this.mySymbol == CardSymbol.WILDCARD && card.mySymbol == CardSymbol.WILDCARD;
+		boolean isWildDrawCard = this.mySymbol == CardSymbol.WILDDRAWCARD && card.mySymbol == CardSymbol.WILDDRAWCARD;
 
-        return sameColor && sameColor;
+        return (sameColor && sameSymbol) || isWildCard || isWildDrawCard;
     }
 
 	public Image getImage() {

@@ -6,23 +6,22 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import applicationServer.uno.cards.properties.CardColours;
 import applicationServer.uno.cards.Card;
-import client.UserInfo;
+import client.businessObjects.UserInfo;
 import exceptions.NotInPlayersHand;
 import exceptions.PlayerDisconnected;
 import interfaces.gameControllerInterface;
 
 public class Player implements PlayerInterface {
-	private UserInfo userInfo;
+	private String username;
 	private gameControllerInterface gameController;
 	private List<Card> cards;
 	private int score;
 	private boolean ready;
 	private Deque<Card> pile;
 
-	public Player(UserInfo userInfo, gameControllerInterface gameController) {
-		this.userInfo = userInfo;
+	public Player(String username, gameControllerInterface gameController) {
+		this.username = username;
 		this.score = 0;
 		this.gameController = gameController;
 		this.pile = new ArrayDeque<>();
@@ -30,7 +29,7 @@ public class Player implements PlayerInterface {
 	}
 
 	public String getName() {
-		return userInfo.getUsername();
+		return username;
 	}
 
 	public List<Card> getCards() {
@@ -53,7 +52,7 @@ public class Player implements PlayerInterface {
 		try {
 			this.gameController.setMsg(message);
 		} catch (RemoteException e) {
-			throw new PlayerDisconnected(this.userInfo + " has left the game!");
+			throw new PlayerDisconnected(username + " has left the game!");
 		}
 	}
 
@@ -81,7 +80,7 @@ public class Player implements PlayerInterface {
 		try {
 			this.gameController.setCardAmountPlayer(name, size);
 		} catch (RemoteException e) {
-			throw new PlayerDisconnected(this.userInfo + " has left the game!");
+			throw new PlayerDisconnected(username + " has left the game!");
 		}
 	}
 
@@ -91,7 +90,7 @@ public class Player implements PlayerInterface {
 			this.cards.addAll(draw);
 			this.gameController.addCards(draw);
 		} catch (RemoteException e) {
-			throw new PlayerDisconnected(this.userInfo + " has left the game!");
+			throw new PlayerDisconnected(username + " has left the game!");
 		}
 	}
 
@@ -101,7 +100,7 @@ public class Player implements PlayerInterface {
 			this.pile.push(card);
 			this.gameController.addPile(card);
 		} catch (RemoteException e) {
-			throw new PlayerDisconnected(this.userInfo + " has left the game!");
+			throw new PlayerDisconnected(username + " has left the game!");
 		}
 	}
 
@@ -120,7 +119,7 @@ public class Player implements PlayerInterface {
 
 	private void removeCard(Card card) {
 		Card pickedCard = cards.stream()
-				.filter(card1 -> card1.cardName.equals(card.cardName))
+				.filter(card1 -> card1.equals(card))
 				.findFirst()
 				.orElseThrow(() -> new NotInPlayersHand("An error occured (a card was played when it was not part of the player's hand) " + card.toString()));
 		this.cards.remove(pickedCard);

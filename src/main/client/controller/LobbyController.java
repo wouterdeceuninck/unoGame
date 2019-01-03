@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import applicationServer.ServerInterface;
-import client.UserInfo;
+import client.businessObjects.UserInfo;
 import exceptions.GameFullException;
 import exceptions.RerouteNeededExeption;
 import javafx.scene.control.*;
-import client.GameInfo;
-import client.UserController;
+import client.businessObjects.GameInfo;
 import exceptions.InvalidInputException;
 import interfaces.lobbyInterface;
 import javafx.beans.value.ChangeListener;
@@ -84,7 +83,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 
     public void createNewGameLogic() throws RemoteException, InvalidInputException {
         if (gameInfo.isValid()){
-            serverInterface.startNewGame(gameInfo);
+            serverInterface.startNewGame(gameInfo, userInfo.getToken());
         } else throw new InvalidInputException("GameObject info is not correct!");
     }
 
@@ -104,7 +103,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     public void reload() throws RemoteException {
         gameData.clear();
         gameData.addAll(
-                serverInterface.getGames().stream()
+                serverInterface.getGames(userInfo.getToken()).stream()
                     .map(GameInfo::toString)
                     .collect(Collectors.toList())
         );
@@ -121,7 +120,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 
             createStage(controller, root1, "GameObject").show();
             try {
-                serverInterface.joinGame(controller, gameInfo.getGameID()+ "", userInfo);
+                serverInterface.joinGame(controller, gameInfo.getGameID()+ "", userInfo.getToken());
             } catch (GameFullException e) {
                 e.printStackTrace();
             } catch (RerouteNeededExeption rerouteNeededExeption) {
@@ -196,8 +195,6 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     public UserInfo getUserInfo() {
         return userInfo;
     }
-
-
 
     @FXML
     private Button btn_join, btn_new, btn_spectate, btn_exit, btn_send, btn_reload;

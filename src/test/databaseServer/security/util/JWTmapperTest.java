@@ -1,6 +1,7 @@
-package applicationServer.security.util;
+package databaseServer.security.util;
 
-import databaseServer.security.util.JWTmapper;
+import databaseServer.security.JwtFactory;
+import databaseServer.security.Token;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +28,12 @@ public class JWTmapperTest {
         Assert.assertEquals(map.get("name"), "john");
         Assert.assertEquals(map.get("alg"), "SHA256");
         Assert.assertEquals(map.get("timestamp"), "1516239022");
+    }
+
+    @Test
+    public void getUsername() {
+        String username = JWTmapper.getUsername(new Token("eyJhbGciOiJTSEEtMjU2In0=.eyJuYW1lIjoiMjMyZWRhMGUtY2UxYS00MmJhLTgwNTMtYTRlMTc2ZjI0NWNlIiwidGltZXN0YW1wIjoiMjAxOS0wMS0wM1QwOTowMDowMi4xMDkifQ==.Tm6LO4qqQJAsRBvT1+UUgn1EJgsdYfGHP3VTQNuAnhYACAU+Jgc3q376jDNGGZDi5NoHPypLJVMX/6n09Ewkq1gLVjelSfZKWfijYsaOIgeDI1CXC+b3iUjtrNIkYx58yNYXsnLacHezRSAlmVKyGBcP3vO/4YfN9ziIubXOXlEZfbbpXXaiJ+pv4tX0aqx4RLO29YiYp9PWShqNGRZKyzBhlxANV1OPuy3rmpsiq81J3pcna9h/X3aSVfkwHf3FghakXdpmFcRfNdGNUEoalXbz4VJPdYl/QcpHQfsjoJkj656dhiAsctJNlvp9WcKxJk/J2w8Mr+jIXTNFsw2/rQ=="));
+        System.out.println(username);
     }
 
     private Map<String, String> createMap() {

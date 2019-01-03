@@ -1,8 +1,7 @@
 package client.views;
 
 import applicationServer.ServerInterface;
-import client.UserController;
-import client.UserInfo;
+import client.businessObjects.UserInfo;
 import client.controller.PopupNewGameController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

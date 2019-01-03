@@ -4,8 +4,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import client.UserController;
-import client.UserInfo;
+import client.businessObjects.UserInfo;
 import exceptions.InvalidInputException;
 import dispatcher.DispatcherInterface;
 import applicationServer.ServerInterface;
@@ -16,7 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;

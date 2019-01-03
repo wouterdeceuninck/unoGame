@@ -1,10 +1,11 @@
 package dispatcher;
 
 import applicationServer.ServerInterface;
-import client.GameInfo;
-import client.UserInfo;
+import client.businessObjects.GameInfo;
+import client.businessObjects.UserInfo;
 import databaseServer.DbInterface;
 import exceptions.RerouteNeededExeption;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.rmi.NotBoundException;
@@ -31,7 +32,8 @@ public class DispatcherInterfaceImplTest {
         System.out.println(portnumber);
 
         ServerInterface serverInterface = connectToApplicationServer(portnumber);
-        System.out.println(serverInterface.startNewGame(createNewGame()));
+        String token = serverInterface.login("PindaKaas", "aPassword");
+        System.out.println(serverInterface.startNewGame(createNewGame(), token));
     }
 
     @Test
@@ -43,17 +45,18 @@ public class DispatcherInterfaceImplTest {
         System.out.println(portnumber);
 
         ServerInterface serverInterface = connectToApplicationServer(portnumber);
+        String token = serverInterface.login("PindaKaas", "aPassword");
         for (int i = 1; i<=21; i++) {
-            System.out.println(i + ": " + serverInterface.startNewGame(createNewGame()));
+            System.out.println(i + ": " + serverInterface.startNewGame(createNewGame(), token));
         }
-        String ID = serverInterface.startNewGame(createNewGame());
+        String ID = serverInterface.startNewGame(createNewGame(), token);
         System.out.println(ID);
         try{
-            serverInterface.joinGame(null, ID, createNewUser("username"));
+            serverInterface.joinGame(null, ID, token);
         } catch (RerouteNeededExeption rerouteNeededExeption) {
             serverInterface = connectToApplicationServer(Integer.parseInt(rerouteNeededExeption.getMessage()));
         }
-        serverInterface.joinGame(null, ID, createNewUser("username"));
+        Assert.assertTrue(serverInterface.joinGame(null, ID, token));
     }
 
     @Test

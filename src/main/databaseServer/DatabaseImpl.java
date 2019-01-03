@@ -1,6 +1,6 @@
 package databaseServer;
 
-import client.GameInfo;
+import client.businessObjects.GameInfo;
 import databaseServer.businessObjects.GameObject;
 import databaseServer.mapper.InfoToObjectMapper;
 import databaseServer.mapper.ObjectToInfoMapper;

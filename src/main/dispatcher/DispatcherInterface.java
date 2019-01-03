@@ -1,9 +1,5 @@
 package dispatcher;
 
-import applicationServer.ServerInterface;
-import client.GameInfo;
-import databaseServer.DbInterface;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

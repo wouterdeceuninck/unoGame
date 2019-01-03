@@ -1,4 +1,4 @@
-package client;
+package client.businessObjects;
 
 import java.io.Serializable;
 

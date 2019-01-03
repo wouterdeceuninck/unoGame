@@ -1,5 +1,6 @@
 package databaseServer.security.util;
 
+import databaseServer.security.Token;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,5 +59,15 @@ public class JWTmapper {
         }
 
         return jsonObject.toString();
+    }
+
+    public static String getUsername(Token token) {
+        try {
+            JSONObject jsonObject = new JSONObject(token.getBody());
+            jsonObject.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

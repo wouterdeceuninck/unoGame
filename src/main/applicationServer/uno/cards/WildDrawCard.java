@@ -26,7 +26,6 @@ public class WildDrawCard extends Card implements Serializable {
 	public void play(UnoGame game) {
 		List<Card> draw = game.draw(nDraw);
 		game.getNextPlayer(1).addCards(draw);
-		game.getNextPlayer(1).getCards().addAll(draw);
 		game.sendMsg("Chosen colour is " + myColour);
 		game.goToNextPlayer();
 	}

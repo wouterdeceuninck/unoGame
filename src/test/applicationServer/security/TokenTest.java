@@ -20,12 +20,8 @@ public class TokenTest {
     @Test
     public void verifyToken() {
         Token token = new Token.Builder().setAlg("sha256").setName("name").setTimestamp("12-12-12").build();
-        try {
-            jwtFactory.verify(token);
-            Assert.assertTrue(jwtFactory.verify(token));
-        } catch (InvalidKeyException | SignatureException e) {
-            e.printStackTrace();
-        }
+        Assert.assertTrue(jwtFactory.verify(token));
+        Assert.assertTrue(jwtFactory.verify(new Token(token.toString())));
     }
 
 }

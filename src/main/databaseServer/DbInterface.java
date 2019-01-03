@@ -2,12 +2,10 @@ package databaseServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.Timestamp;
 import java.util.List;
 
-import client.GameInfo;
+import client.businessObjects.GameInfo;
 import databaseServer.businessObjects.GameObject;
-import exceptions.GameFullException;
 import exceptions.UnAutherizedException;
 import exceptions.UsernameAlreadyUsedException;
 

@@ -4,6 +4,8 @@ import databaseServer.security.util.JWTmapper;
 
 import java.security.InvalidKeyException;
 import java.security.SignatureException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +18,13 @@ public class Token {
         this.header = header;
         this.body = body;
         this.tailer = tailer;
+    }
+
+    public Token(String token) {
+        String[] split = token.split("\\.");
+        this.header = new String(Base64.getDecoder().decode(split[0]));
+        this.body = new String(Base64.getDecoder().decode(split[1]));
+        this.tailer = split[2];
     }
 
     public String getHeader() {
@@ -36,8 +45,8 @@ public class Token {
 
     @Override
     public String toString() {
-        return (header  + "."
-                + body  + "."
+        return (Base64.getEncoder().encodeToString(header.getBytes()) + "."
+                + Base64.getEncoder().encodeToString(body.getBytes())  + "."
                 + tailer);
     }
 

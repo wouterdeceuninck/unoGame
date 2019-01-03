@@ -11,10 +11,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import applicationServer.ServerInterface;
 import applicationServer.ServerInterfaceImpl;
 import databaseServer.DatabaseImpl;
 import databaseServer.DbInterface;
+import dispatcher.infoObjects.ApplicationServerInfo;
+import dispatcher.infoObjects.DatabaseInfo;
 
 public class DispatcherInterfaceImpl extends UnicastRemoteObject implements DispatcherInterface {
 

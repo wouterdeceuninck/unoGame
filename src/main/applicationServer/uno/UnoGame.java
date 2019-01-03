@@ -1,16 +1,14 @@
 package applicationServer.uno;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 import applicationServer.uno.cards.properties.CardColours;
 import applicationServer.uno.cards.properties.CardSymbol;
 import applicationServer.uno.player.PlayerInterface;
 import applicationServer.uno.cards.*;
-import client.GameInfo;
+import client.businessObjects.GameInfo;
 import exceptions.GamePlayError;
 import exceptions.WrongCardOnPileException;
-import sun.audio.AudioPlayer;
 
 public class UnoGame {
 	private List<PlayerInterface> players;
@@ -109,7 +107,6 @@ public class UnoGame {
 			throw new WrongCardOnPileException("Cannot play " + card.toString() + " on " + pile.peek());
 		}
 
-		pile.push(card);
 		playCard(currentPlayer, card);
 
 		if (currentPlayer.getCards().size() == 0) {

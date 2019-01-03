@@ -1,4 +1,4 @@
-package dispatcher;
+package dispatcher.infoObjects;
 
 import applicationServer.ServerInterface;
 

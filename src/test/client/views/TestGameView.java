@@ -1,8 +1,8 @@
 package client.views;
 
 import applicationServer.ServerInterface;
-import client.GameInfo;
-import client.UserInfo;
+import client.businessObjects.GameInfo;
+import client.businessObjects.UserInfo;
 import client.controller.GameController;
 import dispatcher.Main;
 import javafx.application.Application;
@@ -31,16 +31,16 @@ public class TestGameView extends Application {
         String token = serverInterface.login("PindaKaas", "aPassword");
         userInfo.setToken(token);
 
-        String game_id = serverInterface.startNewGame(gamInfo);
+        String game_id = serverInterface.startNewGame(gamInfo, token);
         gamInfo.setGameID(game_id);
-        serverInterface.joinGameAddBot(game_id);
+        serverInterface.joinGameAddBot(game_id, token);
         GameController controller = new GameController(userInfo, gamInfo, serverInterface);
         fxmlLoader.setController(controller);
         Parent root1 = fxmlLoader.load();
 
         primaryStage.setTitle("Create new GameObject");
         primaryStage.setScene(new Scene(root1));
-        serverInterface.joinGame(controller, game_id, createNewUser("PindaKaas"));
+        serverInterface.joinGame(controller, game_id, token);
         primaryStage.show();
     }
 
@@ -64,7 +64,7 @@ public class TestGameView extends Application {
                 .setGameID(UUID.randomUUID().toString())
                 .setGameName("myNewGame")
                 .setAmountOfPlayers(2)
-                .setGameTheme(1)
+                .setGameTheme(0)
                 .build();
     }
 }

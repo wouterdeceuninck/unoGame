@@ -1,6 +1,6 @@
 package databaseServer.mapper;
 
-import client.GameInfo;
+import client.businessObjects.GameInfo;
 import databaseServer.businessObjects.GameObject;
 
 public class InfoToObjectMapper {

@@ -41,10 +41,15 @@ public class JwtFactory {
 
     }
 
-    public boolean verify(Token token) throws InvalidKeyException, SignatureException {
-        signature.initVerify(certificate);
-        signature.update((token.getHeader() + "." + token.getBody() + "." + SECRET).getBytes());
-        return signature.verify(Base64.getDecoder().decode(token.getTailer()));
+    public boolean verify(Token token) {
+        try {
+            signature.initVerify(certificate);
+            signature.update((token.getHeader() + "." + token.getBody() + "." + SECRET).getBytes());
+            return signature.verify(Base64.getDecoder().decode(token.getTailer()));
+        } catch (SignatureException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

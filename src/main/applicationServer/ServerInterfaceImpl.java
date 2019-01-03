@@ -9,31 +9,31 @@ import java.util.List;
 
 import applicationServer.uno.player.BotPlayer;
 import applicationServer.uno.player.PlayerInterface;
-import client.GameInfo;
-import client.UserInfo;
+import client.businessObjects.GameInfo;
+import client.businessObjects.UserInfo;
 import databaseServer.DbInterface;
+import databaseServer.security.JwtFactory;
+import databaseServer.security.Token;
+import databaseServer.security.util.JWTmapper;
 import exceptions.*;
 import dispatcher.DispatcherInterface;
 import interfaces.gameControllerInterface;
 import applicationServer.uno.cards.Card;
 import applicationServer.uno.player.Player;
 import applicationServer.uno.UnoGame;
-import org.sqlite.util.StringUtils;
-
-import static sun.audio.AudioPlayer.player;
 
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 	private List<UnoGame> games;
-	private List<Player> players;
 	private int serverPortNumber;
+	private JwtFactory jwtFactory;
 	private DbInterface dbInterface;
 	private DispatcherInterface dispatcher;
 	private final int MAXSERVERLOAD = 20;
 
 	public ServerInterfaceImpl(int serverPortNumber, int dbPortnumber) throws RemoteException {
 		this.games = new ArrayList<>();
-		this.players = new ArrayList<>();
 		this.serverPortNumber = serverPortNumber;
+		this.jwtFactory = new JwtFactory();
 		setDbInterface(dbPortnumber);
 		setDispatcherInterface();
 	}
@@ -53,16 +53,18 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 		return games.size();
 	}
 
-	public List<GameInfo> getGames() throws RemoteException {
+	public List<GameInfo> getGames(String token) throws RemoteException {
+		verifyToken(token);
 		List<GameInfo> activeGames = dbInterface.getActiveGames();
 		activeGames.forEach(gameInfo -> gameInfo.setGameID(gameInfo.getServerPortnumber() + "_" + gameInfo.getGameID()));
 		return activeGames;
 	}
 
 	@Override
-	public String startNewGame(GameInfo gameInfo) throws RemoteException {
+	public String startNewGame(GameInfo gameInfo, String token) throws RemoteException {
+		verifyToken(token);
 		if(serverFull()) {
-			return connectToApplicationServer(dispatcher.getLeastLoadedApplicationServer()).startNewGame(gameInfo);
+			return connectToApplicationServer(dispatcher.getLeastLoadedApplicationServer()).startNewGame(gameInfo, token);
 		}
 		String game_id = dbInterface.addGame(gameInfo, this.serverPortNumber);
 		gameInfo.setGameID(game_id);
@@ -84,7 +86,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean joinGame(gameControllerInterface gameController, String gameID, UserInfo userInfo) throws IllegalStateException {
+	public boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws IllegalStateException {
+		String username = verifyToken(token);
 		String[] serverPortAndID = gameID.split("_");
 		int serverport = Integer.parseInt(serverPortAndID[0]);
 		String game_id = serverPortAndID[1];
@@ -92,7 +95,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 		if (this.serverPortNumber != serverport) throw new RerouteNeededExeption(serverport);
 
 		try {
-			PlayerInterface player = new Player(userInfo, gameController);
+			PlayerInterface player = new Player(username, gameController);
 			if (!dbInterface.addUsersToGame(game_id)) throw new GameFullException("The game is already full!");
 			UnoGame unoGame = getGameByID(game_id);
 			unoGame.addPlayer(player);
@@ -104,10 +107,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean leaveGame(String username, String gameID) {
-		String[] serverPortAndID = gameID.split("_");
-		int serverport = Integer.parseInt(serverPortAndID[0]);
-		String game_id = serverPortAndID[1];
+	public boolean leaveGame(String gameID, String token) {
+		String username = verifyToken(token);
+		String game_id = gameID.split("_")[1];
 
 		try {
 			dbInterface.removeUsersFromGame(game_id);
@@ -122,7 +124,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean joinGameAddBot(String gameID){
+	public boolean joinGameAddBot(String gameID, String token){
+		verifyToken(token);
 		String[] serverPortAndID = gameID.split("_");
 		int serverport = Integer.parseInt(serverPortAndID[0]);
 		String game_id = serverPortAndID[1];
@@ -151,18 +154,20 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public void sendGameMsg(String msg, String gameID, String username) throws RemoteException {
+	public void sendGameMsg(String msg, String gameID, String token) throws RemoteException {
+		String username = verifyToken(token);
 		String game_id = getGameID(gameID);
 		getGameByID(game_id).sendMsg(username + ": " + msg);
 	}
 
-	private String getGameID(String gameID) {
-		return gameID.split("_")[1];
+	private String verifyToken(String token) {
+		Token tokenObject = new Token(token);
+		if (!jwtFactory.verify(tokenObject)) throw new UnAutherizedException("The token was not valid!");
+		return JWTmapper.getUsername(tokenObject);
 	}
 
-	@Override
-	public List<Card> getCards(String username, String gameID) {
-        return getForId(gameID).getCardsFromPlayer(username);
+	private String getGameID(String gameID) {
+		return gameID.split("_")[1];
 	}
 
     private UnoGame getForId(String gameID) {

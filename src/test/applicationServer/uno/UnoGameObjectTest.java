@@ -4,7 +4,7 @@ import applicationServer.uno.cards.Card;
 import applicationServer.uno.cards.properties.CardColours;
 import applicationServer.uno.cards.properties.CardSymbol;
 import applicationServer.uno.player.BotPlayer;
-import client.GameInfo;
+import client.businessObjects.GameInfo;
 import org.junit.Assert;
 import org.junit.Test;
 
