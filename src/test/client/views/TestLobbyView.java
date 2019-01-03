@@ -2,7 +2,9 @@ package client.views;
 
 import applicationServer.ServerInterface;
 import client.UserController;
+import client.UserInfo;
 import client.controller.LobbyController;
+import dispatcher.Main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,15 +20,21 @@ public class TestLobbyView extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        new Main().startServer();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Lobby.fxml"));
         ServerInterface serverInterface = connectToApplicationServer(1200);
-        fxmlLoader.setController(new LobbyController(new UserController(serverInterface)));
+        fxmlLoader.setController(new LobbyController(getNewUser(), serverInterface));
         Parent root1 = fxmlLoader.load();
 
         primaryStage.setTitle("GameObject Lobby");
         primaryStage.setScene(new Scene(root1));
         primaryStage.show();
     }
+
+    private UserInfo getNewUser() {
+        return new UserInfo.InnerBuilder().setName("PindaKaas").buildUserInfo();
+    }
+
     private ServerInterface connectToApplicationServer(int portnumber) {
         try {
             return (ServerInterface) LocateRegistry.getRegistry("localhost", portnumber).lookup("UNOserver");

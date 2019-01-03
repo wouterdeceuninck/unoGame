@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 import client.UserController;
+import client.UserInfo;
 import exceptions.InvalidInputException;
 import dispatcher.DispatcherInterface;
 import applicationServer.ServerInterface;
@@ -28,7 +29,6 @@ public class LoginController {
 
 	public ServerInterface server = null;
 	private String username = null;
-	private UserController userController = null;
     private static final int DISPATCHER_PORT = 1099;
 
 	@FXML
@@ -43,9 +43,7 @@ public class LoginController {
 	@FXML
 	public PasswordField password1, password2, loginPassword;
 
-	//TODO
-	@FXML
-	private DatePicker birthdate;
+	private String token;
 
 	@FXML
 	private void SignUpUp() {
@@ -79,8 +77,11 @@ public class LoginController {
 	private void connectToServer() throws RemoteException, NotBoundException {
 		DispatcherInterface dispatcherInterface = (DispatcherInterface) LocateRegistry.getRegistry("localhost", DISPATCHER_PORT)
 				.lookup("UNOdispatcher");
-		server = dispatcherInterface.getLeastLoadedApplicationServer();
-		userController = new UserController(server);
+		server = connectToApplicationServer(dispatcherInterface.getLeastLoadedApplicationServer());
+	}
+
+	private ServerInterface connectToApplicationServer(int leastLoadedApplicationServer) throws RemoteException, NotBoundException {
+		return (ServerInterface) LocateRegistry.getRegistry("localhost", leastLoadedApplicationServer).lookup("UNOserver");
 	}
 
 	@FXML
@@ -106,7 +107,7 @@ public class LoginController {
 	public void registerLogic(final String username, final String password1, final String password2) throws FailedLoginException, InvalidInputException {
 		if (isValidRegisterInput(username, password1, password2)) {
 			try {
-				userController.registerToServer(username, password1);
+				this.token = server.register(username, password1);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -118,7 +119,7 @@ public class LoginController {
 	public void loginLogic(String username, String password) throws InvalidInputException {
 		if (isValidLoginInput(username, password)) {
             try {
-                userController.loginToServer(username, password);
+                this.token = server.login(username, password);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -148,7 +149,11 @@ public class LoginController {
 	private void startLobby() {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Lobby.fxml"));
-			fxmlLoader.setController(new LobbyController(userController));
+			UserInfo userController = new UserInfo.InnerBuilder()
+					.setName(this.username)
+					.setToken(this.token)
+					.buildUserInfo();
+			fxmlLoader.setController(new LobbyController(userController, server));
 			Parent root1 = fxmlLoader.load();
 
 			Stage stage = new Stage();
@@ -166,7 +171,10 @@ public class LoginController {
 		popUpAlert("Connection to server lost");
 	}
 
-    public UserController getUserController() {
-        return userController;
-    }
+	public UserInfo getUserInfo() {
+		return new UserInfo.InnerBuilder()
+				.setName(this.username)
+				.setToken(this.token)
+				.buildUserInfo();
+	}
 }

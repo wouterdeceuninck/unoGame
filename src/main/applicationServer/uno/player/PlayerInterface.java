@@ -17,7 +17,6 @@ public interface PlayerInterface {
     void setScore();
     boolean isReady();
     void setPlayerNotReady();
-    CardColours askColor();
     String getLog();
     Deque<Card> getPile();
 }

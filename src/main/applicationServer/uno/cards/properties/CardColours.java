@@ -1,10 +1,10 @@
 package applicationServer.uno.cards.properties;
 
 public enum CardColours {
-    YELLOW("yellow"),
-    BLUE("blue"),
-    RED("red"),
-    GREEN("green"),
+    YELLOW("YELLOW"),
+    BLUE("BLUE"),
+    RED("RED"),
+    GREEN("GREEN"),
     NONE("");
 
     public final String colour;

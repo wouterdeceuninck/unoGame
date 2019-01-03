@@ -6,6 +6,7 @@ import java.util.List;
 
 import applicationServer.uno.cards.Card;
 import client.GameInfo;
+import client.UserInfo;
 import exceptions.UnAutherizedException;
 import exceptions.UsernameAlreadyUsedException;
 import interfaces.gameControllerInterface;
@@ -13,7 +14,7 @@ import interfaces.gameControllerInterface;
 public interface ServerInterface extends Remote {
 
     String startNewGame(GameInfo gameInfo) throws RemoteException;
-	boolean joinGame(gameControllerInterface gameController, String gameID, String username) throws RemoteException;
+	boolean joinGame(gameControllerInterface gameController, String gameID, UserInfo userInfo) throws RemoteException;
 	boolean joinGameAddBot(String gameID) throws RemoteException;
 	boolean leaveGame(String username, String gameID)throws RemoteException;
 

@@ -2,6 +2,7 @@ package client.views;
 
 import applicationServer.ServerInterface;
 import client.UserController;
+import client.UserInfo;
 import client.controller.PopupNewGameController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,12 +20,16 @@ public class TestPopupView extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/PopupNewGame.fxml"));
         ServerInterface serverInterface = connectToApplicationServer(1200);
-        fxmlLoader.setController(new PopupNewGameController(new UserController(serverInterface)));
+        fxmlLoader.setController(new PopupNewGameController(getUserInfo(), serverInterface));
         Parent root1 = fxmlLoader.load();
 
         primaryStage.setTitle("Create new GameObject");
         primaryStage.setScene(new Scene(root1));
         primaryStage.show();
+    }
+
+    private UserInfo getUserInfo() {
+        return new UserInfo.InnerBuilder().setName("PindaKaas").buildUserInfo();
     }
 
     private ServerInterface connectToApplicationServer(int portnumber) {

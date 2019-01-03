@@ -1,7 +1,9 @@
 package client.controller;
 
+import applicationServer.ServerInterface;
 import client.GameInfo;
 import client.UserController;
+import client.UserInfo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,14 +15,40 @@ import javafx.stage.Stage;
 import java.rmi.RemoteException;
 
 public class PopupNewGameController {
-	private final UserController userController;
+
+	private final ServerInterface serverInterface;
+	private final UserInfo userInfo;
+
+	public PopupNewGameController(UserInfo userInfo , ServerInterface serverInterface) {
+		this.userInfo = userInfo;
+		this.serverInterface = serverInterface;
+	}
+
+	private GameInfo createGameInfo() {
+		return new GameInfo.Builder()
+			.setGameName(name.getText())
+			.setAmountOfPlayers(numberOfPlayersnew.getValue())
+			.setGameTheme(themePicker.getValue())
+			.build();
+	}
+
+	private String getGameName(String gameName) {
+		if (gameName.equals("")) {
+			gameName = userInfo.getUsername() + "'s game";
+		}
+		return gameName;
+	}
+
+	private GameInfo buildNewGameInfo() {
+		return new GameInfo.Builder()
+				.setGameName(getGameName(name.getText()))
+				.setGameTheme(themePicker.getValue())
+				.setAmountOfPlayers(numberOfPlayersnew.getValue())
+				.build();
+	}
 
 	ObservableList<Integer> themeList = FXCollections.observableArrayList(0, 1);
 	ObservableList<Integer> numberOfPlayerList = FXCollections.observableArrayList(1, 2, 3, 4);
-
-	public PopupNewGameController(UserController userController) {
-		this.userController = userController;
-	}
 
 	@FXML
 	TextField name;
@@ -43,24 +71,8 @@ public class PopupNewGameController {
 	@FXML
 	public void startGame() throws RemoteException {
 		createGameInfo();
-	    userController.getServer().startNewGame(userController.getGameInfo());
+		serverInterface.startNewGame(buildNewGameInfo());
 		closeWindow();
-	}
-
-	private void createGameInfo() {
-		userController.setGameInfo(
-				new GameInfo.Builder()
-					.setGameName(name.getText())
-					.setAmountOfPlayers(numberOfPlayersnew.getValue())
-					.setGameTheme(themePicker.getValue())
-					.build());
-	}
-
-	private String getGameName(String gameName) {
-		if (gameName.equals("")) {
-			gameName = userController.getUserInfo().getUsername() + "'s game";
-		}
-		return gameName;
 	}
 
 	@FXML

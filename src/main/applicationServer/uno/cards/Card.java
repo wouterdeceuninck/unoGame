@@ -2,6 +2,7 @@ package applicationServer.uno.cards;
 
 import java.io.Serializable;
 
+import applicationServer.uno.UnoGame;
 import applicationServer.uno.cards.properties.CardColours;
 import applicationServer.uno.cards.properties.CardSymbol;
 import javafx.scene.image.Image;
@@ -15,10 +16,10 @@ public class Card implements Serializable {
 	public String cardName;
 	public int myScore;
 
-	public Card(CardColours colour, CardSymbol symbol) {
-		myColour = colour;
-		mySymbol = symbol;
-		cardName = mySymbol + "_" + colour + ".png";
+	public Card(CardColours myColour, CardSymbol symbol) {
+		this.myColour = myColour;
+		this.mySymbol = symbol;
+		cardName = mySymbol.getName() + "_" + myColour.colour + ".png";
 	}
 
 	public Card(Card selectedCard) {
@@ -62,5 +63,9 @@ public class Card implements Serializable {
 
 	public Image getImage() {
 		return new Image(Card.class.getResourceAsStream("SEVEN_YELLOW.png"));
+	}
+
+	public void play(UnoGame unoGame) {
+
 	}
 }

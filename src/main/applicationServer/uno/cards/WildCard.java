@@ -20,7 +20,6 @@ public class WildCard extends Card implements Serializable {
 	}
 
 	public void play(UnoGame game) {
-		this.myColour = game.getNextPlayer(0).askColor();
 	}
 
 }

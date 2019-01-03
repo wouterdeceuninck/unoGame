@@ -2,10 +2,9 @@ package client.views;
 
 import applicationServer.ServerInterface;
 import client.GameInfo;
-import client.UserController;
 import client.UserInfo;
 import client.controller.GameController;
-import client.controller.PopupNewGameController;
+import dispatcher.Main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,25 +17,37 @@ import java.rmi.registry.LocateRegistry;
 import java.util.UUID;
 
 public class TestGameView extends Application {
+    private final String username = "PindaKaas";
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        new Main().startServer();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Game.fxml"));
+
         ServerInterface serverInterface = connectToApplicationServer(1200);
-        UserController userController = new UserController(serverInterface);
-        GameInfo newGame = createNewGame();
+        UserInfo userInfo = createNewUser(username);
+        GameInfo gamInfo = createNewGame();
 
-        userController.loginToServer("PindaKaas", "aPassword");
+        String token = serverInterface.login("PindaKaas", "aPassword");
+        userInfo.setToken(token);
 
-        String game_id = serverInterface.startNewGame(newGame);
-        newGame.setGameID(game_id);
-        userController.setGameInfo(newGame);
+        String game_id = serverInterface.startNewGame(gamInfo);
+        gamInfo.setGameID(game_id);
         serverInterface.joinGameAddBot(game_id);
-        fxmlLoader.setController(new GameController(userController));
+        GameController controller = new GameController(userInfo, gamInfo, serverInterface);
+        fxmlLoader.setController(controller);
         Parent root1 = fxmlLoader.load();
 
         primaryStage.setTitle("Create new GameObject");
         primaryStage.setScene(new Scene(root1));
+        serverInterface.joinGame(controller, game_id, createNewUser("PindaKaas"));
         primaryStage.show();
+    }
+
+    private UserInfo createNewUser(String username) {
+        return new UserInfo.InnerBuilder()
+                .setName(username)
+                .buildUserInfo();
     }
 
     private ServerInterface connectToApplicationServer(int portnumber) {

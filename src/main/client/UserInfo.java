@@ -1,8 +1,9 @@
 package client;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class UserInfo {
+public class UserInfo implements Serializable {
     private String name;
     private String token;
 

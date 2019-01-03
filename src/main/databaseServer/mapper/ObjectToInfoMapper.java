@@ -11,6 +11,7 @@ public class ObjectToInfoMapper {
                 .setGameName(gameObject.getName())
                 .setAmountOfPlayers(gameObject.getAmountOfPlayers())
                 .setConnectedPlayers(gameObject.getConnectedPlayers())
+                .setPortnumber(gameObject.getServerport())
                 .build();
     }
 }

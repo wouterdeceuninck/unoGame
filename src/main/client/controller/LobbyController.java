@@ -2,13 +2,18 @@ package client.controller;
 
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import applicationServer.ServerInterface;
+import client.UserInfo;
 import exceptions.GameFullException;
+import exceptions.RerouteNeededExeption;
 import javafx.scene.control.*;
 import client.GameInfo;
 import client.UserController;
@@ -28,37 +33,16 @@ import javafx.stage.WindowEvent;
 import applicationServer.uno.player.Player;
 
 public class LobbyController extends UnicastRemoteObject implements lobbyInterface{
+    private ServerInterface serverInterface;
+    private UserInfo userInfo;
+    private GameInfo gameInfo;
 
-    public static final String GAME = "GameObject";
-    private ObservableList gameData = FXCollections.observableArrayList();
-    private ListView gamesList;
-    private UserController userController;
-
-    @FXML
-    private Button btn_join, btn_new, btn_spectate, btn_exit, btn_send, btn_reload;
-
-    @FXML
-    Label lbl_username;
-
-    @FXML
-    private ListView<Player> players;
-
-    @FXML
-    private TextField chat_input;
-
-    @FXML
-    private TextArea chat;
-
-    @FXML
-    private AnchorPane pn_input, pn_output;
-    private String username;
-
-    public LobbyController(UserController userController) throws RemoteException {
-        this.userController = userController;
+    public LobbyController(UserInfo userInfo, ServerInterface serverInterface) throws RemoteException {
+        this.userInfo = userInfo;
+        this.serverInterface = serverInterface;
     }
 
     public void initialize() throws RemoteException {
-
         gamesList = new ListView();
         gamesList.getSelectionModel().selectedItemProperty().addListener(
                 (ChangeListener<String>) (observable, oldValue, newValue) -> {
@@ -66,7 +50,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
                     setCurrentGame(buildGameInfo(temp));
                 });
         setList();
-        lbl_username.setText(username);
+        lbl_username.setText(userInfo.getUsername());
         this.gamesList = new ListView(gameData);
     }
 
@@ -82,7 +66,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     }
 
     private void setCurrentGame(GameInfo gameInfo) {
-        this.userController.setGameInfo(gameInfo);
+        this.gameInfo = gameInfo;
     }
 
     public void setList() throws RemoteException {
@@ -99,8 +83,8 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     }
 
     public void createNewGameLogic() throws RemoteException, InvalidInputException {
-        if (userController.getGameInfo().isValid()){
-            userController.getServer().startNewGame(userController.getGameInfo());
+        if (gameInfo.isValid()){
+            serverInterface.startNewGame(gameInfo);
         } else throw new InvalidInputException("GameObject info is not correct!");
     }
 
@@ -118,11 +102,12 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     
     @FXML
     public void reload() throws RemoteException {
-        List<String> gameslist = userController.getServer().getGames().stream()
-                .map(gameInfo -> gameInfo.toString())
-                .collect(Collectors.toList());
         gameData.clear();
-        gameData.addAll(gameslist);
+        gameData.addAll(
+                serverInterface.getGames().stream()
+                    .map(GameInfo::toString)
+                    .collect(Collectors.toList())
+        );
         gamesList.setEditable(false);
         gamesList.setItems(gameData);
     }
@@ -130,19 +115,27 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     public void startGame() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Game.fxml"));
-            GameController controller = new GameController(userController);
+            GameController controller = new GameController(userInfo, gameInfo , serverInterface);
             fxmlLoader.setController(controller);
  			Parent root1 = (Parent) fxmlLoader.load();
 
-            createStage(controller, root1, GAME).show();
+            createStage(controller, root1, "GameObject").show();
             try {
-                userController.getServer().joinGame(controller, userController.getGameInfo().getGameID()+ "", username);
+                serverInterface.joinGame(controller, gameInfo.getGameID()+ "", userInfo);
             } catch (GameFullException e) {
                 e.printStackTrace();
+            } catch (RerouteNeededExeption rerouteNeededExeption) {
+                this.serverInterface = connectToApplicationServer(Integer.parseInt(rerouteNeededExeption.getMessage()));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private ServerInterface connectToApplicationServer(int leastLoadedApplicationServer) throws RemoteException, NotBoundException {
+        System.out.println(leastLoadedApplicationServer);
+        return (ServerInterface) LocateRegistry.getRegistry("localhost", leastLoadedApplicationServer).lookup("UNOserver");
     }
 
     private Stage createStage(GameController controller, Parent parent, String name) {
@@ -153,15 +146,14 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
         return stage;
     }
 
-    //TODO
     private void setOnClose(GameController controller, Stage stage) {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
                 try {
-                    userController.getServer().openLobby(controller);
-                    LobbyController lobby = new LobbyController(userController);
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/client/fxmlFiles/Lobby.fxml"));
+                    serverInterface.openLobby(controller);
+                    LobbyController lobby = new LobbyController(userInfo, serverInterface);
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Lobby.fxml"));
                     fxmlLoader.setController(lobby);
 
                     Parent root1 = (Parent) fxmlLoader.load();
@@ -187,7 +179,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
 	public void startPopupNewGame(){
 		try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/PopupNewGame.fxml"));
-            fxmlLoader.setController(new PopupNewGameController(this.userController));
+            fxmlLoader.setController(new PopupNewGameController(this.userInfo, this.serverInterface));
 
             Parent root1 = fxmlLoader.load();
 
@@ -201,8 +193,32 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
         }
 	}
 
-    public UserController getUserController() {
-        return userController;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
+
+
+
+    @FXML
+    private Button btn_join, btn_new, btn_spectate, btn_exit, btn_send, btn_reload;
+
+    @FXML
+    Label lbl_username;
+
+    @FXML
+    private ListView<Player> players;
+
+    @FXML
+    private TextField chat_input;
+
+    @FXML
+    private TextArea chat;
+
+    @FXML
+    private AnchorPane pn_input, pn_output;
+
+    private ObservableList gameData = FXCollections.observableArrayList();
+    private ListView gamesList;
+
 }
 

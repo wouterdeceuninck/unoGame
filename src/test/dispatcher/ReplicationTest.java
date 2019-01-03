@@ -2,6 +2,7 @@ package dispatcher;
 
 import applicationServer.ServerInterface;
 import client.GameInfo;
+import client.UserInfo;
 import databaseServer.DbInterface;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -171,7 +172,7 @@ public class ReplicationTest {
 
         String gameID = portnumberAndGameId.split("_")[1];
 
-        serverInterface.joinGame(null, portnumberAndGameId, "myUsername");
+        serverInterface.joinGame(null, portnumberAndGameId, createNewUser("PindaKaas"));
         Thread.sleep(100);
 
         int connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
@@ -193,7 +194,7 @@ public class ReplicationTest {
 
         String gameID = portnumberAndGameId.split("_")[1];
 
-        serverInterface.joinGame(null, portnumberAndGameId, "myUsername");
+        serverInterface.joinGame(null, portnumberAndGameId, createNewUser("myUsername"));
         Thread.sleep(100);
         int connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
         int connectedPlayers2 = getConnectedPlayers(gameID, dbInterface2.getActiveGames());
@@ -223,8 +224,8 @@ public class ReplicationTest {
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
         String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame());
 
-        serverInterface.joinGame(null, portnumberAndGameId, "myUsername");
-        serverInterface.joinGame(null, portnumberAndGameId, "myOtherUsername");
+        serverInterface.joinGame(null, portnumberAndGameId, createNewUser("myUsername"));
+        serverInterface.joinGame(null, portnumberAndGameId, createNewUser("myOtherUsername"));
         Thread.sleep(100);
 
         int size1After = dbInterface1.getActiveGames().size();
@@ -290,5 +291,11 @@ public class ReplicationTest {
                 .setAmountOfPlayers(2)
                 .setGameTheme(1)
                 .build();
+    }
+
+    private UserInfo createNewUser(String username) {
+        return new UserInfo.InnerBuilder()
+                .setName(username)
+                .buildUserInfo();
     }
 }

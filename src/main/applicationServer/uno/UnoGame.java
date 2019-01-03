@@ -99,30 +99,25 @@ public class UnoGame {
 	}
 
 	private String playTurn() {
-		try {
-			PlayerInterface currentPlayer = players.get(this.currentPlayer);
-			Card card = currentPlayer.getCard();
-			if (card == null) {
-				addCardToPlayer(currentPlayer);
-				return null;
-			}
-			if (!card.canPlayOn(pile.peek())) {
-				throw new WrongCardOnPileException("Cannot play " + card.toString() + " on " + pile.peek());
-			}
-
-			pile.push(card);
-			playCard(currentPlayer, card);
-
-			if (currentPlayer.getCards().size() == 0) {
-				return currentPlayer.getName();
-			}
-
-			goToNextPlayer();
-			return null;
-		} catch (RemoteException e) {
-			e.printStackTrace();
+		PlayerInterface currentPlayer = players.get(this.currentPlayer);
+		Card card = currentPlayer.getCard();
+		if (card == null) {
+			addCardToPlayer(currentPlayer);
 			return null;
 		}
+		if (!card.canPlayOn(pile.peek())) {
+			throw new WrongCardOnPileException("Cannot play " + card.toString() + " on " + pile.peek());
+		}
+
+		pile.push(card);
+		playCard(currentPlayer, card);
+
+		if (currentPlayer.getCards().size() == 0) {
+			return currentPlayer.getName();
+		}
+
+		goToNextPlayer();
+		return null;
 	}
 
 	private void addCardToPlayer(PlayerInterface currentPlayer) {
@@ -131,13 +126,9 @@ public class UnoGame {
 		goToNextPlayer();
 	}
 
-	private void playCard(PlayerInterface player, Card card) throws RemoteException {
-		player.getCards().remove(
-		        player.getCards().stream()
-                    .filter(card1 -> card1.equals(card))
-                    .findFirst()
-                    .orElseThrow(() -> new NotInPlayersHand("An error occured (a card was played when it was not part of the player's hand)")));
+	private void playCard(PlayerInterface player, Card card) {
 		pile.push(card);
+		card.play(this);
         updateAllPlayers(player, card);
 	}
 
@@ -159,6 +150,7 @@ public class UnoGame {
 
 		players.forEach(player -> {
 		    player.setScore();
+		    player.sendMessage("The game is over and the winner is: " + winner);
 		    player.setPlayerNotReady();
         });
 		return winner;
@@ -271,10 +263,4 @@ public class UnoGame {
 				.get())
 		;
 	}
-
-    private class NotInPlayersHand extends RuntimeException {
-        public NotInPlayersHand(String message) {
-            super(message);
-        }
-    }
 }

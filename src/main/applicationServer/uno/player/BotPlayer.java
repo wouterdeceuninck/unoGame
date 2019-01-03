@@ -52,6 +52,7 @@ public class BotPlayer implements PlayerInterface {
                 .orElse(null);
         Card card = pickedCard == null ? null : setColor(pickedCard);
         System.out.println(getLogMessage(card));
+        this.cards.remove(card);
         return card;
     }
 
@@ -93,11 +94,6 @@ public class BotPlayer implements PlayerInterface {
     @Override
     public void setPlayerNotReady() {
         this.ready = false;
-    }
-
-    @Override
-    public CardColours askColor() {
-        return CardColours.BLUE;
     }
 
     @Override

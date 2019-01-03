@@ -1,6 +1,7 @@
 package applicationServer;
 
 import client.GameInfo;
+import client.UserInfo;
 import databaseServer.DatabaseImpl;
 import databaseServer.DbInterface;
 import exceptions.GameFullException;
@@ -54,8 +55,8 @@ public class ServerInterfaceImplTest {
         String game_id = serverInterface.startNewGame(createNewGame());
         System.out.println(game_id);
 
-        serverInterface.joinGame(null, game_id, "username");
-        serverInterface.joinGame(null, game_id, "username");
+        serverInterface.joinGame(null, game_id, createNewUser("username"));
+        serverInterface.joinGame(null, game_id, createNewUser("username"));
     }
 
     @Test(expected = GameFullException.class)
@@ -64,9 +65,9 @@ public class ServerInterfaceImplTest {
         String game_id = serverInterface.startNewGame(createNewGame());
         System.out.println(game_id);
 
-        serverInterface.joinGame(null, game_id, "username");
-        serverInterface.joinGame(null, game_id, "username");
-        boolean bool = serverInterface.joinGame(null, game_id, "username");
+        serverInterface.joinGame(null, game_id, createNewUser("username"));
+        serverInterface.joinGame(null, game_id, createNewUser("username"));
+        boolean bool = serverInterface.joinGame(null, game_id, createNewUser("username"));
     }
 
     @Test
@@ -107,5 +108,11 @@ public class ServerInterfaceImplTest {
                 .setAmountOfPlayers(2)
                 .setGameTheme(1)
                 .build();
+    }
+
+    private UserInfo createNewUser(String username) {
+        return new UserInfo.InnerBuilder()
+                .setName(username)
+                .buildUserInfo();
     }
 }

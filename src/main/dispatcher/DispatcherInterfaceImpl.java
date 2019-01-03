@@ -19,7 +19,7 @@ import databaseServer.DbInterface;
 public class DispatcherInterfaceImpl extends UnicastRemoteObject implements DispatcherInterface {
 
 	private static final int MAXSERVERLOAD = 20;
-	private List<ServerInterface> applicationServers;
+	private List<ApplicationServerInfo> applicationServers;
 	private List<DatabaseInfo> databaseServers;
 
 	private int serverPort = 1200;
@@ -53,7 +53,7 @@ public class DispatcherInterfaceImpl extends UnicastRemoteObject implements Disp
 			registry.bind("UNOserver", server);
 
 			// update class variables
-			applicationServers.add((ServerInterface) server);
+			applicationServers.add(new ApplicationServerInfo(serverPort, server));
 
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -79,13 +79,13 @@ public class DispatcherInterfaceImpl extends UnicastRemoteObject implements Disp
 	}
 
 	@Override
-	public ServerInterface getLeastLoadedApplicationServer() {
-		ServerInterface serverInterface = applicationServers.stream()
+	public int getLeastLoadedApplicationServer() {
+		ApplicationServerInfo applicationServerInfo = applicationServers.stream()
 				.sorted(Comparator.comparingInt(this::getAmountOfGames))
 				.findFirst()
 				.get();
-		if (getAmountOfGames(serverInterface) >= MAXSERVERLOAD) createOneServer();
-		return serverInterface;
+		if (getAmountOfGames(applicationServerInfo) >= MAXSERVERLOAD) return createOneServer();
+		return applicationServerInfo.portnumber;
 	}
 
 	@Override
@@ -104,9 +104,9 @@ public class DispatcherInterfaceImpl extends UnicastRemoteObject implements Disp
 		return databaseServers.get(0).portnumber;
 	}
 
-	private Integer getAmountOfGames(ServerInterface serverInterface) {
+	private Integer getAmountOfGames(ApplicationServerInfo applicationServerInfo) {
 		try {
-			return serverInterface.getAmountOfGameOnServer();
+			return applicationServerInfo.serverInterface.getAmountOfGameOnServer();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

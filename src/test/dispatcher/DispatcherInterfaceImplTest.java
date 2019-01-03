@@ -2,6 +2,7 @@ package dispatcher;
 
 import applicationServer.ServerInterface;
 import client.GameInfo;
+import client.UserInfo;
 import databaseServer.DbInterface;
 import exceptions.RerouteNeededExeption;
 import org.junit.Test;
@@ -48,11 +49,11 @@ public class DispatcherInterfaceImplTest {
         String ID = serverInterface.startNewGame(createNewGame());
         System.out.println(ID);
         try{
-            serverInterface.joinGame(null, ID, "myUserName");
+            serverInterface.joinGame(null, ID, createNewUser("username"));
         } catch (RerouteNeededExeption rerouteNeededExeption) {
             serverInterface = connectToApplicationServer(Integer.parseInt(rerouteNeededExeption.getMessage()));
         }
-        serverInterface.joinGame(null, ID, "myUserName");
+        serverInterface.joinGame(null, ID, createNewUser("username"));
     }
 
     @Test
@@ -110,4 +111,9 @@ public class DispatcherInterfaceImplTest {
         return null;
     }
 
+    private UserInfo createNewUser(String username) {
+        return new UserInfo.InnerBuilder()
+                .setName(username)
+                .buildUserInfo();
+    }
 }
