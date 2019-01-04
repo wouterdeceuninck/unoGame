@@ -33,7 +33,7 @@ public class DispatcherInterfaceImplTest {
         System.out.println(portnumber);
 
         ServerInterface serverInterface = connectToApplicationServer(portnumber);
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
         System.out.println(serverInterface.startNewGame(createNewGame(), token));
     }
 
@@ -46,7 +46,7 @@ public class DispatcherInterfaceImplTest {
         System.out.println(portnumber);
 
         ServerInterface serverInterface = connectToApplicationServer(portnumber);
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
         for (int i = 1; i<=21; i++) {
             System.out.println(i + ": " + serverInterface.startNewGame(createNewGame(), token));
         }

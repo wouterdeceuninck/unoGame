@@ -114,7 +114,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws IllegalStateException, GameNotFoundException, GameFullException {
+	public boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws IllegalStateException, GameNotFoundException {
 		String username = verifyToken(token);
 		String[] serverPortAndID = gameID.split("_");
 		int serverport = Integer.parseInt(serverPortAndID[0]);

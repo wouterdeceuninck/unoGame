@@ -13,7 +13,7 @@ import interfaces.gameControllerInterface;
 public interface ServerInterface extends Remote {
 
     String startNewGame(GameInfo gameInfo, String token) throws RemoteException;
-	boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws RemoteException, GameFullException;
+	boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws RemoteException;
 	boolean joinGameAddBot(String gameID, String token) throws RemoteException, GameFullException;
 	boolean leaveGame(String gameID, String token)throws RemoteException;
 

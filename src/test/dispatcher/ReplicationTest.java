@@ -123,7 +123,7 @@ public class ReplicationTest {
         int differenceBefore = activeGames1.size() - activeGames2.size();
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
 
         serverInterface.startNewGame(this.createNewGame(), token);
         Thread.sleep(100);
@@ -181,7 +181,7 @@ public class ReplicationTest {
         DbInterface dbInterface2 = connectToDbServer(dispatcherInterface.createDBServer());
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
         String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame(), token);
 
         String gameID = portnumberAndGameId.split("_")[1];
@@ -204,7 +204,7 @@ public class ReplicationTest {
         DbInterface dbInterface2 = connectToDbServer(dispatcherInterface.createDBServer());
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
         String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame(), token);
 
         String gameID = portnumberAndGameId.split("_")[1];
@@ -216,7 +216,7 @@ public class ReplicationTest {
 
         Assert.assertEquals(connectedPlayers1, connectedPlayers2);
 
-        serverInterface.leaveGame("myUsername", portnumberAndGameId);
+        serverInterface.leaveGame(portnumberAndGameId, token);
         Thread.sleep(100);
         connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
         connectedPlayers2 = getConnectedPlayers(gameID, dbInterface2.getActiveGames());
@@ -260,7 +260,7 @@ public class ReplicationTest {
         DbInterface dbInterface2 = connectToDbServer(dispatcherInterface.createDBServer());
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
         String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame(), token);
 
         String gameID = portnumberAndGameId.split("_")[1];

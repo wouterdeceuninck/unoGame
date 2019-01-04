@@ -134,7 +134,7 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
             } catch (GameNotFoundException gameNotFound) {
                 popUpAlert("The Game was not found!");
             }
-        } catch (Exception | GameFullException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             popUpAlert("The Game was not found!");
         }
