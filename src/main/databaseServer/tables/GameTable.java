@@ -19,6 +19,11 @@ public class GameTable {
         }
     }
 
+    private void createGameTable() {
+        executeStatement(getRemoveAllGamesStatement());
+        executeStatement(getCreateTableStatement());
+    }
+
     public String addGame(GameObject gameObject){
         String ID = UUID.randomUUID().toString();
         while (!checkID(ID)) ID = UUID.randomUUID().toString();
@@ -104,11 +109,6 @@ public class GameTable {
         return getGame(game_id).getAmountOfPlayers() == 0;
     }
 
-    private void createGameTable() {
-        String sql = getCreateTableStatement();
-        executeStatement(sql);
-    }
-
     private void executeStatement(String sql) {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
@@ -152,6 +152,10 @@ public class GameTable {
                 + "	game_name       VARCHAR     NOT NULL,\n" + " amount_of_players 	INTEGER     NOT NULL,\n"
                 + " connected_players  	BOOLEAN     NOT NULL, \n" + " active 	BOOLEAN     NOT NULL,\n"
                 + " serverport		INTEGER		NOT NULL \n" + ");";
+    }
+
+    private String getRemoveAllGamesStatement() {
+        return "DROP TABLE IF EXISTS Game";
     }
 
     private String getSetInactiveStatement() {

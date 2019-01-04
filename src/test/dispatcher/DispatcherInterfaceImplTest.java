@@ -4,6 +4,7 @@ import applicationServer.ServerInterface;
 import client.businessObjects.GameInfo;
 import client.businessObjects.UserInfo;
 import databaseServer.DbInterface;
+import exceptions.GameFullException;
 import exceptions.RerouteNeededExeption;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class DispatcherInterfaceImplTest {
     }
 
     @Test
-    public void createGamesOnServers_rerouteNeeded () throws RemoteException {
+    public void createGamesOnServers_rerouteNeeded () throws RemoteException, GameFullException {
         new Main().startServer();
         DispatcherInterface dispatcherInterface = connectToDispatcher();
         dispatcherInterface.createDBServer();

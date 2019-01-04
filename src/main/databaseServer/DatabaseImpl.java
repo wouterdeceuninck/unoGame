@@ -13,7 +13,11 @@ import exceptions.UsernameAlreadyUsedException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +27,13 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
     private final UserTable userTable;
     private final GameTable gameTable;
     private final List<DbInterface> replicateDb;
+    private Date activeGamesLastUpdated;
 
     public DatabaseImpl (int portnumber) throws RemoteException {
         this.portnumber = portnumber;
         this.userTable = new UserTable(URI + portnumber + ".db");
         this.gameTable = new GameTable(URI + portnumber + ".db");
+        setActiveGamesLastUpdatedToNow();
         replicateDb = new ArrayList<>();
     }
 
@@ -62,9 +68,24 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
     }
 
     @Override
+    public List<GameInfo> getActiveGames(String timestamp){
+        try {
+            if (this.activeGamesLastUpdated.after(getDate(timestamp))){
+                return gameTable.getActiveGames().stream()
+                        .map(gameObject -> ObjectToInfoMapper.mapToInfo(gameObject))
+                        .collect(Collectors.toList());
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public void setInactive(String game_id){
         gameTable.setInactive(game_id);
         replicateSetInactive(game_id);
+        setActiveGamesLastUpdatedToNow();
     }
 
     @Override
@@ -80,13 +101,27 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
         GameObject gameObject = InfoToObjectMapper.mapToObject(gameInfo, serverport);
         String game_id = gameTable.addGame(gameObject);
         replicateAddGame(gameObject, game_id);
+        setActiveGamesLastUpdatedToNow();
         return game_id;
+    }
+
+    private void setActiveGamesLastUpdatedToNow() {
+        try {
+            this.activeGamesLastUpdated = getDate(LocalDateTime.now().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Date getDate(String s) throws ParseException {
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(s);
     }
 
     @Override
     public boolean addUsersToGame(String game_id) {
         boolean gameFound = gameTable.addUserToGame(game_id);
         if (gameFound) replicateAddUserToGame(game_id);
+        setActiveGamesLastUpdatedToNow();
         return gameFound;
     }
 
@@ -94,11 +129,13 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
     public void removeUsersFromGame(String game_id){
         gameTable.removeUserFromGame(game_id);
         replicateRemoveUserFromGame(game_id);
+        setActiveGamesLastUpdatedToNow();
     }
 
     @Override
     public void duplicateSetInactive(String game_id) {
         new Thread(() -> gameTable.setInactive(game_id)).start();
+        setActiveGamesLastUpdatedToNow();
     }
 
     @Override
@@ -114,16 +151,19 @@ public class DatabaseImpl extends UnicastRemoteObject implements databaseServer.
     @Override
     public void duplicateAddGame(GameObject gameObject, String game_id){
         new Thread(() -> gameTable.duplicateAddGame(gameObject, game_id)).start();
+        setActiveGamesLastUpdatedToNow();
     }
 
     @Override
     public void duplicateAddUsersToGame(String game_id){
         new Thread(() -> gameTable.addUserToGame(game_id)).start();
+        setActiveGamesLastUpdatedToNow();
     }
 
     @Override
     public void duplicateRemoveUsersFromGame(String game_id){
         new Thread(() -> gameTable.removeUserFromGame(game_id)).start();
+        setActiveGamesLastUpdatedToNow();
     }
 
     @Override

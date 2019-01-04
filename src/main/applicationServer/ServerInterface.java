@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import client.businessObjects.GameInfo;
+import exceptions.GameFullException;
 import exceptions.UnAutherizedException;
 import exceptions.UsernameAlreadyUsedException;
 import interfaces.gameControllerInterface;
@@ -12,8 +13,8 @@ import interfaces.gameControllerInterface;
 public interface ServerInterface extends Remote {
 
     String startNewGame(GameInfo gameInfo, String token) throws RemoteException;
-	boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws RemoteException;
-	boolean joinGameAddBot(String gameID, String token) throws RemoteException;
+	boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws RemoteException, GameFullException;
+	boolean joinGameAddBot(String gameID, String token) throws RemoteException, GameFullException;
 	boolean leaveGame(String gameID, String token)throws RemoteException;
 
 	List<GameInfo> getGames(String token) throws RemoteException;

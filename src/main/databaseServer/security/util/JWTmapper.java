@@ -62,12 +62,6 @@ public class JWTmapper {
     }
 
     public static String getUsername(Token token) {
-        try {
-            JSONObject jsonObject = new JSONObject(token.getBody());
-            jsonObject.getString("name");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return getMap(token.getLiteralString()).get("name");
     }
 }

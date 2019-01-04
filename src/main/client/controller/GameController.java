@@ -28,6 +28,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import applicationServer.uno.cards.Card;
+import javafx.stage.Stage;
 
 public class GameController extends UnicastRemoteObject implements gameControllerInterface {
 
@@ -165,7 +166,7 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 	private Label title;
 
 	@FXML
-	private Button btn_red, btn_green, btn_blue, btn_yellow, btn_exit;
+	private Button btn_red, btn_green, btn_blue, btn_yellow, btn_exit, btn_send;
 
 	@FXML
 	private TextField opponent1, opponent2, opponent3;
@@ -188,12 +189,6 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 	private TextArea chat_output, text_scoreboard;
 
 	private ObservableList data = FXCollections.observableArrayList();
-
-	@FXML
-	public void sendMsg() throws RemoteException {
-		serverInterface.sendGameMsg(chat_input.getText(), gameInfo.getGameID(), userInfo.getUsername());
-		chat_input.setText("");
-	}
 
 	private void setMyCards() {
 		userBox.getChildren().clear();
@@ -307,6 +302,21 @@ public class GameController extends UnicastRemoteObject implements gameControlle
 			event.consume();
 		});
 
+		btn_exit.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			closeWindow();
+		});
+
+		btn_send.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			try {
+				serverInterface.sendGameMsg(chat_input.getText(), this.gameInfo.getGameID(), this.userInfo.getToken());
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	private void closeWindow() {
+		((Stage) btn_exit.getScene().getWindow()).close();
 	}
 }
 

@@ -5,6 +5,7 @@ import client.businessObjects.GameInfo;
 import client.businessObjects.UserInfo;
 import client.controller.GameController;
 import dispatcher.Main;
+import exceptions.GameFullException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,14 +34,22 @@ public class TestGameView extends Application {
 
         String game_id = serverInterface.startNewGame(gamInfo, token);
         gamInfo.setGameID(game_id);
-        serverInterface.joinGameAddBot(game_id, token);
+        try {
+            serverInterface.joinGameAddBot(game_id, token);
+        } catch (GameFullException e) {
+            e.printStackTrace();
+        }
         GameController controller = new GameController(userInfo, gamInfo, serverInterface);
         fxmlLoader.setController(controller);
         Parent root1 = fxmlLoader.load();
 
         primaryStage.setTitle("Create new GameObject");
         primaryStage.setScene(new Scene(root1));
-        serverInterface.joinGame(controller, game_id, token);
+        try {
+            serverInterface.joinGame(controller, game_id, token);
+        } catch (GameFullException e) {
+            e.printStackTrace();
+        }
         primaryStage.show();
     }
 

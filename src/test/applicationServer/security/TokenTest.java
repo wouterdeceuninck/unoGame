@@ -13,15 +13,17 @@ public class TokenTest {
 
     @Test
     public void createTokenFromBuilder() {
-        Token token = new Token.Builder().setAlg("sha256").setName("name").setTimestamp("12-12-12").build();
+        Token token = getToken("12-12-2018 12:34");
         System.out.println(token.toString());
     }
 
     @Test
     public void verifyToken() {
-        Token token = new Token.Builder().setAlg("sha256").setName("name").setTimestamp("12-12-12").build();
-        Assert.assertTrue(jwtFactory.verify(token));
-        Assert.assertTrue(jwtFactory.verify(new Token(token.toString())));
+        Assert.assertFalse(jwtFactory.verify(getToken("12-12-2018 12:34")));
+    }
+
+    private Token getToken(String timestamp) {
+        return new Token.Builder().setAlg("sha256").setName("name").setTimestamp(timestamp).build();
     }
 
 }

@@ -50,6 +50,17 @@ public class Token {
                 + tailer);
     }
 
+    public String getLiteralString() {
+        return "{\n" +
+                "\t\"header\": " +
+                header +
+                ",\n" +
+                "\t\"body\": " +
+                body +
+                "\n" +
+                "}";
+    }
+
     public static class Builder {
         private Map<String, String> map = new HashMap<>();
 

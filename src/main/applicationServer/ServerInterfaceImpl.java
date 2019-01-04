@@ -4,8 +4,11 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import applicationServer.uno.player.BotPlayer;
 import applicationServer.uno.player.PlayerInterface;
@@ -29,11 +32,14 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	private DbInterface dbInterface;
 	private DispatcherInterface dispatcher;
 	private final int MAXSERVERLOAD = 20;
+	private List<GameInfo> activeGamesList;
+	private String activeGamesListLastUpdateTime;
 
 	public ServerInterfaceImpl(int serverPortNumber, int dbPortnumber) throws RemoteException {
 		this.games = new ArrayList<>();
 		this.serverPortNumber = serverPortNumber;
 		this.jwtFactory = new JwtFactory();
+		this.activeGamesList = new ArrayList<>();
 		setDbInterface(dbPortnumber);
 		setDispatcherInterface();
 	}
@@ -55,9 +61,31 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 	public List<GameInfo> getGames(String token) throws RemoteException {
 		verifyToken(token);
-		List<GameInfo> activeGames = dbInterface.getActiveGames();
-		activeGames.forEach(gameInfo -> gameInfo.setGameID(gameInfo.getServerPortnumber() + "_" + gameInfo.getGameID()));
-		return activeGames;
+
+		if (null == activeGamesListLastUpdateTime || activeGamesListLastUpdateTime.isEmpty()) {
+			List<GameInfo> activeGamesFromDB = dbInterface.getActiveGames();
+			if (setActiveGamesList(activeGamesFromDB));
+			setGameIDs();
+			return this.activeGamesList;
+		}
+		List<GameInfo> gamesFromDBServer = dbInterface.getActiveGames(activeGamesListLastUpdateTime);
+		setActiveGamesList(gamesFromDBServer);
+		setGameIDs();
+
+		return this.activeGamesList;
+	}
+
+	private void setGameIDs() {
+		activeGamesList.forEach(gameInfo -> gameInfo.setGameID(gameInfo.getServerPortnumber() + "_" + gameInfo.getGameID()));
+	}
+
+	private boolean setActiveGamesList(List<GameInfo> activeGamesFromDB) {
+		if (null != activeGamesFromDB && !activeGamesFromDB.isEmpty()) {
+			this.activeGamesList = activeGamesFromDB;
+			this.activeGamesListLastUpdateTime = LocalDateTime.now().toString();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -86,7 +114,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws IllegalStateException {
+	public boolean joinGame(gameControllerInterface gameController, String gameID, String token) throws IllegalStateException, GameNotFoundException, GameFullException {
 		String username = verifyToken(token);
 		String[] serverPortAndID = gameID.split("_");
 		int serverport = Integer.parseInt(serverPortAndID[0]);
@@ -107,7 +135,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean leaveGame(String gameID, String token) {
+	public boolean leaveGame(String gameID, String token) throws GameNotFoundException {
 		String username = verifyToken(token);
 		String game_id = gameID.split("_")[1];
 
@@ -124,7 +152,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public boolean joinGameAddBot(String gameID, String token){
+	public boolean joinGameAddBot(String gameID, String token) throws GameNotFoundException, GameFullException {
 		verifyToken(token);
 		String[] serverPortAndID = gameID.split("_");
 		int serverport = Integer.parseInt(serverPortAndID[0]);
@@ -154,7 +182,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	}
 
 	@Override
-	public void sendGameMsg(String msg, String gameID, String token) throws RemoteException {
+	public void sendGameMsg(String msg, String gameID, String token) throws RemoteException, GameNotFoundException {
 		String username = verifyToken(token);
 		String game_id = getGameID(gameID);
 		getGameByID(game_id).sendMsg(username + ": " + msg);

@@ -8,6 +8,8 @@ import client.businessObjects.UserInfo;
 import exceptions.InvalidInputException;
 import dispatcher.DispatcherInterface;
 import applicationServer.ServerInterface;
+import exceptions.UnAutherizedException;
+import exceptions.UsernameAlreadyUsedException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -89,6 +91,8 @@ public class LoginController {
 				startLobby();
 			} catch (FailedLoginException | InvalidInputException e) {
 				popUpAlert(e.getMessage());
+			} catch (UsernameAlreadyUsedException usernameAlreadyUsed) {
+				popUpAlert("The username is already used!");
 			}
 	}
 
@@ -99,6 +103,8 @@ public class LoginController {
 			startLobby();
 		} catch (InvalidInputException e) {
 			popUpAlert(e.getMessage());
+		} catch (UsernameAlreadyUsedException usernameAlreadyUsed) {
+			popUpAlert("The username is already used!");
 		}
 	}
 
@@ -139,7 +145,7 @@ public class LoginController {
 
 	private void popUpAlert(String string) {
 		Alert errorAlert = new Alert(AlertType.ERROR);
-		errorAlert.setHeaderText("Input not valid");
+		errorAlert.setHeaderText("Error!");
 		errorAlert.setContentText(string);
 		errorAlert.showAndWait();
 	}
@@ -167,12 +173,5 @@ public class LoginController {
 
 	private void serverNotFound() {
 		popUpAlert("Connection to server lost");
-	}
-
-	public UserInfo getUserInfo() {
-		return new UserInfo.InnerBuilder()
-				.setName(this.username)
-				.setToken(this.token)
-				.buildUserInfo();
 	}
 }

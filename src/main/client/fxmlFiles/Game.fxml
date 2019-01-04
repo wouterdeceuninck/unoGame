@@ -175,7 +175,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="25.0" VBox.vgrow="SOMETIMES">
                            <children>
                               <TextField fx:id="chat_input" HBox.hgrow="SOMETIMES" />
-                              <Button fx:id="btn_send" alignment="CENTER" mnemonicParsing="false" onAction="#sendMsg" style="-fx-background-color: #e2e2e2;" text="Send" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                              <Button fx:id="btn_send" alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: #e2e2e2;" text="Send" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
@@ -214,7 +214,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
                            </VBox.margin>
                         </TextArea>
-                        <Button fx:id="btn_exit" alignment="CENTER" mnemonicParsing="false" onAction="#sendMsg" prefHeight="27.0" prefWidth="247.0" style="-fx-background-color: #e2e2e2;" text="Leave Game" textAlignment="CENTER">
+                        <Button fx:id="btn_exit" alignment="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="247.0" style="-fx-background-color: #e2e2e2;" text="Leave Game" textAlignment="CENTER">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>

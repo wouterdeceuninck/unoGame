@@ -2,8 +2,8 @@ package dispatcher;
 
 import applicationServer.ServerInterface;
 import client.businessObjects.GameInfo;
-import client.businessObjects.UserInfo;
 import databaseServer.DbInterface;
+import exceptions.GameFullException;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -106,7 +108,7 @@ public class ReplicationTest {
     }
 
     @Test
-    public void createDbServers_replicateAddGame() throws RemoteException, InterruptedException {
+    public void createDbServers_replicateAddGame() throws RemoteException, InterruptedException, ParseException {
         new Main().startServer();
         DispatcherInterface dispatcherInterface = connectToDispatcher();
 
@@ -131,6 +133,9 @@ public class ReplicationTest {
         int differenceAfter = activeGames1.size() - activeGames2.size();
 
         Assert.assertEquals(differenceBefore, differenceAfter);
+        String timestamp = LocalDateTime.now().toString();
+        Assert.assertTrue(dbInterface1.getActiveGames(timestamp) == null);
+        Assert.assertTrue(dbInterface2.getActiveGames(timestamp) == null);
     }
 
     @Test
@@ -144,7 +149,8 @@ public class ReplicationTest {
         DbInterface dbInterface4 = connectToDbServer(dispatcherInterface.createDBServer());
 
         ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
-        String token = serverInterface.login("PindaKaas", "aPassword");
+        String token = serverInterface.register(UUID.randomUUID().toString(), "aPassword");
+        System.out.println(token);
         serverInterface.startNewGame(this.createNewGame(), token);
         Thread.sleep(100);
 
@@ -167,7 +173,7 @@ public class ReplicationTest {
     }
 
     @Test
-    public void createDBServers_replicateJoinGame() throws RemoteException, InterruptedException {
+    public void createDBServers_replicateJoinGame() throws RemoteException, InterruptedException, GameFullException {
         new Main().startServer();
         DispatcherInterface dispatcherInterface = connectToDispatcher();
 
@@ -190,7 +196,7 @@ public class ReplicationTest {
     }
 
     @Test
-    public void createDBServers_replicateRemoveUser() throws RemoteException, InterruptedException {
+    public void createDBServers_replicateRemoveUser() throws RemoteException, InterruptedException, GameFullException {
         new Main().startServer();
         DispatcherInterface dispatcherInterface = connectToDispatcher();
 
@@ -220,7 +226,7 @@ public class ReplicationTest {
 
     @Ignore
     @Test
-    public void createDBServers_replicateSetInactive() throws RemoteException, InterruptedException {
+    public void createDBServers_replicateSetInactive() throws RemoteException, InterruptedException, GameFullException {
         new Main().startServer();
         DispatcherInterface dispatcherInterface = connectToDispatcher();
 
@@ -243,6 +249,31 @@ public class ReplicationTest {
 
         Assert.assertEquals(size1After, size1);
         Assert.assertEquals(size2After, size2);
+    }
+
+    @Test(expected = GameFullException.class)
+    public void createDBServers_replicateJoinGame_expectGameFull() throws RemoteException, InterruptedException, GameFullException {
+        new Main().startServer();
+        DispatcherInterface dispatcherInterface = connectToDispatcher();
+
+        DbInterface dbInterface1 = connectToDbServer(dispatcherInterface.createDBServer());
+        DbInterface dbInterface2 = connectToDbServer(dispatcherInterface.createDBServer());
+
+        ServerInterface serverInterface = connectToApplicationServer(dispatcherInterface.createApplicationServer());
+        String token = serverInterface.login("PindaKaas", "aPassword");
+        String portnumberAndGameId = serverInterface.startNewGame(this.createNewGame(), token);
+
+        String gameID = portnumberAndGameId.split("_")[1];
+
+        serverInterface.joinGameAddBot(portnumberAndGameId, token);
+        serverInterface.joinGameAddBot(portnumberAndGameId, token);
+        serverInterface.joinGameAddBot(portnumberAndGameId, token);
+        Thread.sleep(100);
+
+        int connectedPlayers1 = getConnectedPlayers(gameID, dbInterface1.getActiveGames());
+        int connectedPlayers2 = getConnectedPlayers(gameID, dbInterface2.getActiveGames());
+
+        Assert.assertEquals(connectedPlayers1, connectedPlayers2);
     }
 
     private int getConnectedPlayers(String gameID, List<GameInfo> activeGames) {
@@ -303,9 +334,8 @@ public class ReplicationTest {
                 .build();
     }
 
-    private UserInfo createNewUser(String username) {
-        return new UserInfo.InnerBuilder()
-                .setName(username)
-                .buildUserInfo();
+    @Test
+    public void printLocalDatetime() {
+        System.out.println(LocalDateTime.now().toString());
     }
 }

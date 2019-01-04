@@ -1,5 +1,6 @@
 package databaseServer.security;
 
+import databaseServer.security.util.JWTmapper;
 import databaseServer.security.util.SecretValue;
 
 import java.io.FileInputStream;
@@ -7,7 +8,12 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
 
 public class JwtFactory {
     private final String filepath = "resources/keystore.jks";
@@ -45,11 +51,19 @@ public class JwtFactory {
         try {
             signature.initVerify(certificate);
             signature.update((token.getHeader() + "." + token.getBody() + "." + SECRET).getBytes());
-            return signature.verify(Base64.getDecoder().decode(token.getTailer()));
-        } catch (SignatureException | InvalidKeyException e) {
+            String timestamp = JWTmapper.getMap(token.getLiteralString()).get("timestamp");
+            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(timestamp);
+            boolean needsRefresh = !date.after(getCurrentDateMinusOneDay());
+            return signature.verify(Base64.getDecoder().decode(token.getTailer())) && !needsRefresh;
+        } catch (SignatureException | InvalidKeyException | ParseException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private Date getCurrentDateMinusOneDay() {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).minusDays(1);
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
 }

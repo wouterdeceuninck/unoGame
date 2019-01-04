@@ -21,7 +21,9 @@ public class TestLobbyView extends Application {
         new Main().startServer();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Lobby.fxml"));
         ServerInterface serverInterface = connectToApplicationServer(1200);
-        fxmlLoader.setController(new LobbyController(getNewUser(), serverInterface));
+        UserInfo newUser = getNewUser();
+        newUser.setToken(serverInterface.login("PindaKaas", "aPassword"));
+        fxmlLoader.setController(new LobbyController(newUser, serverInterface));
         Parent root1 = fxmlLoader.load();
 
         primaryStage.setTitle("GameObject Lobby");

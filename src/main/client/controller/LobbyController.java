@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import applicationServer.ServerInterface;
 import client.businessObjects.UserInfo;
 import exceptions.GameFullException;
+import exceptions.GameNotFoundException;
 import exceptions.RerouteNeededExeption;
 import javafx.scene.control.*;
 import client.businessObjects.GameInfo;
@@ -78,7 +79,6 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     @FXML
     public void createNewGame() throws RemoteException {
     	startPopupNewGame();
-    	reload();
     }
 
     public void createNewGameLogic() throws RemoteException, InvalidInputException {
@@ -102,11 +102,14 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
     @FXML
     public void reload() throws RemoteException {
         gameData.clear();
-        gameData.addAll(
-                serverInterface.getGames(userInfo.getToken()).stream()
-                    .map(GameInfo::toString)
-                    .collect(Collectors.toList())
-        );
+        List<GameInfo> games = serverInterface.getGames(userInfo.getToken());
+        if (games != null && !games.isEmpty()) {
+            gameData.addAll(
+                    games.stream()
+                            .map(GameInfo::toString)
+                            .collect(Collectors.toList())
+            );
+        }
         gamesList.setEditable(false);
         gamesList.setItems(gameData);
     }
@@ -116,21 +119,33 @@ public class LobbyController extends UnicastRemoteObject implements lobbyInterfa
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/fxmlFiles/Game.fxml"));
             GameController controller = new GameController(userInfo, gameInfo , serverInterface);
             fxmlLoader.setController(controller);
- 			Parent root1 = (Parent) fxmlLoader.load();
 
-            createStage(controller, root1, "GameObject").show();
             try {
-                serverInterface.joinGame(controller, gameInfo.getGameID()+ "", userInfo.getToken());
+                serverInterface.joinGame(controller, gameInfo.getGameID() , userInfo.getToken());
+                Parent root1 = (Parent) fxmlLoader.load();
+                createStage(controller, root1, "GameObject").show();
             } catch (GameFullException e) {
-                e.printStackTrace();
+                popUpAlert("The Game you picked is full!");
             } catch (RerouteNeededExeption rerouteNeededExeption) {
                 this.serverInterface = connectToApplicationServer(Integer.parseInt(rerouteNeededExeption.getMessage()));
+                serverInterface.joinGame(controller, gameInfo.getGameID() , userInfo.getToken());
+                Parent root1 = (Parent) fxmlLoader.load();
+                createStage(controller, root1, "GameObject").show();
+            } catch (GameNotFoundException gameNotFound) {
+                popUpAlert("The Game was not found!");
             }
-        } catch (Exception e) {
+        } catch (Exception | GameFullException e) {
             e.printStackTrace();
+            popUpAlert("The Game was not found!");
         }
     }
 
+    private void popUpAlert(String string) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText(string);
+        errorAlert.showAndWait();
+    }
 
     private ServerInterface connectToApplicationServer(int leastLoadedApplicationServer) throws RemoteException, NotBoundException {
         System.out.println(leastLoadedApplicationServer);

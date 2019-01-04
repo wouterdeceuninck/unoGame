@@ -19,6 +19,7 @@ public interface DbInterface extends Remote {
 	void duplicateRegisterUser(String username, String password, String token)throws RemoteException;
 
 	List<GameInfo> getActiveGames() throws RemoteException;
+	List<GameInfo> getActiveGames(String timestamp) throws RemoteException;
 
 	void setInactive(String game_id)throws RemoteException;
 	void duplicateSetInactive(String game_id) throws RemoteException;
