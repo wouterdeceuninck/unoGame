@@ -1,15 +1,12 @@
 package applicationServer.security;
 
-import databaseServer.security.JwtFactory;
+import databaseServer.security.JWTVerifier;
 import databaseServer.security.Token;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.security.InvalidKeyException;
-import java.security.SignatureException;
-
 public class TokenTest {
-    private JwtFactory jwtFactory = new JwtFactory();
+    private JWTVerifier JWTVerifier = new JWTVerifier();
 
     @Test
     public void createTokenFromBuilder() {
@@ -19,7 +16,7 @@ public class TokenTest {
 
     @Test
     public void verifyToken() {
-        Assert.assertFalse(jwtFactory.verify(getToken("12-12-2018 12:34:25.256")));
+        Assert.assertFalse(JWTVerifier.verify(getToken("12-12-2018 12:34:25.256")));
     }
 
     private Token getToken(String timestamp) {

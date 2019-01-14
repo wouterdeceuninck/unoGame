@@ -1,6 +1,5 @@
 package databaseServer.security.util;
 
-import databaseServer.security.JwtFactory;
 import databaseServer.security.Token;
 import org.json.JSONException;
 import org.junit.Assert;

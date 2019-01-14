@@ -56,7 +56,7 @@ public class UnoGameObjectTest {
     public void stressTest() {
         List<String> winners = new ArrayList<>();
         for (int i = 0; i<10000; i++) {
-            winners.add(createNewBotGame(4).play());
+            new Thread(() ->winners.add(createNewBotGame(4).play())).start();
         }
         long bot1 = winners.stream().filter(winner -> winner.equals("bot1")).count();
         long bot2 = winners.stream().filter(winner -> winner.equals("bot2")).count();

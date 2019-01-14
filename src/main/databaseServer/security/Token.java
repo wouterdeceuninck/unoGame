@@ -4,7 +4,6 @@ import databaseServer.security.util.JWTmapper;
 
 import java.security.InvalidKeyException;
 import java.security.SignatureException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class Token {
             try {
                 return new Token(JWTmapper.getHeader(map)
                         , JWTmapper.getBody(map)
-                        , new JwtFactory().createTailer(JWTmapper.getHeader(map), JWTmapper.getBody(map)));
+                        , new JWTVerifier().createTailer(JWTmapper.getHeader(map), JWTmapper.getBody(map)));
 
             } catch (InvalidKeyException | SignatureException e) {
                 e.printStackTrace();

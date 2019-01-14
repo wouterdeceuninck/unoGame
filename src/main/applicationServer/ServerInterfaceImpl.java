@@ -6,29 +6,25 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import applicationServer.uno.player.BotPlayer;
 import applicationServer.uno.player.PlayerInterface;
 import client.businessObjects.GameInfo;
-import client.businessObjects.UserInfo;
 import databaseServer.DbInterface;
-import databaseServer.security.JwtFactory;
+import databaseServer.security.JWTVerifier;
 import databaseServer.security.Token;
 import databaseServer.security.util.JWTmapper;
 import exceptions.*;
 import dispatcher.DispatcherInterface;
 import interfaces.gameControllerInterface;
-import applicationServer.uno.cards.Card;
 import applicationServer.uno.player.Player;
 import applicationServer.uno.UnoGame;
 
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 	private List<UnoGame> games;
 	private int serverPortNumber;
-	private JwtFactory jwtFactory;
+	private JWTVerifier JWTVerifier;
 	private DbInterface dbInterface;
 	private DispatcherInterface dispatcher;
 	private final int MAXSERVERLOAD = 20;
@@ -38,7 +34,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 	public ServerInterfaceImpl(int serverPortNumber, int dbPortnumber) throws RemoteException {
 		this.games = new ArrayList<>();
 		this.serverPortNumber = serverPortNumber;
-		this.jwtFactory = new JwtFactory();
+		this.JWTVerifier = new JWTVerifier();
 		this.activeGamesList = new ArrayList<>();
 		setDbInterface(dbPortnumber);
 		setDispatcherInterface();
@@ -190,7 +186,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
 	private String verifyToken(String token) {
 		Token tokenObject = new Token(token);
-		if (!jwtFactory.verify(tokenObject)) throw new UnAutherizedException("The token was not valid!");
+		if (!JWTVerifier.verify(tokenObject)) throw new UnAutherizedException("The token was not valid!");
 		return JWTmapper.getUsername(tokenObject);
 	}
 

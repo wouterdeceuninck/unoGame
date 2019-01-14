@@ -88,6 +88,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: com.google.collections:google-collections:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:11.0.1-ea+1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:win:11.0.1-ea+1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:11.0.1-ea+1" level="project" />

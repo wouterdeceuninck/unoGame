@@ -53,11 +53,6 @@ public class BotPlayer implements PlayerInterface {
         Card card = pickedCard == null ? null : setColor(pickedCard);
         System.out.println(getLogMessage(card));
         this.cards.remove(card);
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return card;
     }
 

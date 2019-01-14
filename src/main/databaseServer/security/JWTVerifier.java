@@ -15,14 +15,14 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 
-public class JwtFactory {
+public class JWTVerifier {
     private final String filepath = "resources/keystore.jks";
     private final String SECRET = SecretValue.SECRETVALUE;
     private PrivateKey privateKey;
     private Signature signature;
     private Certificate certificate;
 
-    public JwtFactory() {
+    public JWTVerifier() {
         try {
             initKeys();
         } catch (KeyStoreException | UnrecoverableKeyException | CertificateException | NoSuchAlgorithmException | IOException e) {
